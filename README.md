@@ -158,4 +158,4 @@ gene-expression-prediction/
 This project is licensed under the MIT License - see the [LICENSE] file for details.
 
 ## Binned-CNN
-This section describes the Binned-CNN approach.
+This section describes the Binned-CNN approach. Updating!
