@@ -7,6 +7,8 @@ library(utils)
 zenodo_url <- "https://zenodo.org/record/your_record_id/files/models.zip"  # Replace with the actual Zenodo URL (its it README file)
 download_path <- "/path/to/download/directory"
 unzip_path <- "/path/to/unzip/directory"
+test_samples_file <- "/path/to/test_samples/directory"
+train_samples_file <- "/path/to/train_samples/directory"
 
 # Function to download the models zip file from Zenodo
 download_models_from_zenodo <- function(zenodo_url, download_path, unzip_path) {
