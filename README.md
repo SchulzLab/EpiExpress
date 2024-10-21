@@ -62,16 +62,19 @@ Before running the predictions, you need to download the pre-trained models from
 - Download the zip file (`models.zip`) containing the pre-trained models.
 - Unzip the file into a directory on your local machine.
 
-Alternatively, you can automate the download and unzip process by running the script in R. Update the `zenodo_url`, `download_path`,`test_samples_file`, `train_samples_file`, and `unzip_path` in the script:
+Alternatively, you can automate the download and unzip process by running the script in R. Update the `zenodo_url`, `download_path`, `unzip_path` in the script:
 
 ```r
 zenodo_url <- "https://zenodo.org/record/your_record_id/files/models.zip"  # Replace with actual Zenodo URL
 download_path <- "/path/to/download/directory"
 unzip_path <- "/path/to/unzip/directory"
+download_models_from_zenodo(zenodo_url, download_path, unzip_path)
+```
+
+Also, add `test_samples_file`, `train_samples_file` paths in the script:
+```r
 test_samples_file <- "/path/to/test_samples/directory"
 train_samples_file <- "/path/to/train_samples/directory"
-
-download_models_from_zenodo(zenodo_url, download_path, unzip_path)
 ```
 
 ### 2. Prepare Input Data
