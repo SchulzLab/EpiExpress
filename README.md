@@ -1,6 +1,6 @@
 
-# Gene Expression Prediction with Pre-Trained Models (CRE-RF)
-
+# Gene Expression Prediction with Pre-Trained Models
+#CRE-RF Models
 This repository provides an R script to predict gene expression levels using pre-trained Random Forest (CRE-RF) models. The models are stored on Zenodo, and users can download, unzip, and use them for prediction on their own data.
 
 ## Table of Contents
