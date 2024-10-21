@@ -94,7 +94,7 @@ Each file should contain tab-delimited data with at least two columns:
 
 ### 3. Run Predictions
 
-Now you can run the script to predict gene expression using the pre-trained models. You can predict for a single gene or multiple genes.
+Now you can run the script "CRE_RF_Prediction.R" to predict gene expression using the pre-trained models. You can predict for a single gene or multiple genes.
 
 #### Predict for a Single Gene
 
