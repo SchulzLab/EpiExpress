@@ -6,16 +6,17 @@ This repository provides an R script to predict gene expression levels using pre
 
 ## Table of Contents
 - [CRE-RF](#CRE-RF)
-- [Overview](#overview)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
-  - [2. Prepare Input Data](#2-prepare-input-data)
-  - [3. Run Predictions](#3-run-predictions)
-- [File Structure](#file-structure)
-- [Notes](#notes)
-- [License](#license)
+ - [Overview](#overview)
+ - [Requirements](#requirements)
+ - [Installation](#installation)
+ - [Usage](#usage)
+   - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
+   - [2. Prepare Input Data](#2-prepare-input-data)
+   - [3. Run Predictions](#3-run-predictions)
+ - [File Structure](#file-structure)
+ - [Notes](#notes)
+ - [License](#license)
+- [Binned-CNN] (#Binned-CNN)
 
 ## CRE-RF
 
