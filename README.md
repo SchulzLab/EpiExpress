@@ -151,6 +151,7 @@ gene-expression-prediction/
 
 - Ensure that the gene expression files and the model names match. For example, if your gene file is named `ENSG00000123456.txt.gz`, the corresponding model should be `ENSG00000123456.RDS`.
 - The input files should be properly formatted with correct sample IDs and gene expression values.
+- Save train_samples_file and test_samples_file in your directory.
 
 ## License
 
