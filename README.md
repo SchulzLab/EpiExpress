@@ -56,7 +56,7 @@ Alternatively, download the script files from GitHub.
 Before running the predictions, you need to download the pre-trained models from Zenodo. The models are provided as a zip file containing 28,000 Random Forest models, one for each gene.
 
 **Steps:**
-- Go to the [Zenodo record](https://zenodo.org/record/your_record_id) (replace with the actual URL).
+- Go to the [Zenodo record](https://zenodo.org/records/13945441).
 - Download the zip file (`models.zip`) containing the pre-trained models.
 - Unzip the file into a directory on your local machine.
 
