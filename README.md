@@ -27,7 +27,7 @@ This repository allows users to:
 - Predict gene expression using the pre-trained models.
 - Generate results, including Mean Squared Error (MSE) and correlation, for the predicted and actual values.
 
-The models are built using Random Forest (RF) for 28,000 genes, and the predictions are based on a user's dataset containing the same features.
+The models are built using Random Forest (RF) for ~ 28,000 genes, and the predictions are based on a user's dataset containing the same features.
 
 ## Requirements
 
