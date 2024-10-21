@@ -142,10 +142,9 @@ After downloading and unzipping the models, your directory structure should look
 ```
 gene-expression-prediction/
 ├── models/  # Directory where models are stored after unzipping
-├── input_data/  # Directory with gene expression data
 ├── train_samples.csv  # List of training sample IDs
 ├── test_samples.csv  # List of testing sample IDs
-└── gene_list.txt  # List of gene names (one per line)
+└── input_data/  # Directory with gene expression data
 ```
 
 ## Notes
