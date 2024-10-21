@@ -12,7 +12,6 @@ This repository provides an R script to predict gene expression levels using pre
     - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
     - [2. Prepare Input Data](#2-prepare-input-data)
     - [3. Run Predictions](#3-run-predictions)
-  - [File Structure](#file-structure)
   - [Notes](#notes)
   - [License](#license)
 - [Binned-CNN](#Binned-CNN)
@@ -139,18 +138,6 @@ For each gene, the script will generate a CSV file with the prediction results. 
 - Back-scaled MSE after reversing normalization.
 
 The results for multiple genes will be aggregated into a single CSV file.
-
-## File Structure
-
-After downloading and unzipping the models, your directory structure should look something like this:
-
-```
-gene-expression-prediction/
-├── models/  # Directory where models are stored after unzipping
-├── train_samples.csv  # List of training sample IDs
-├── test_samples.csv  # List of testing sample IDs
-└── input_data/  # Directory with gene expression data
-```
 
 ## Notes
 
