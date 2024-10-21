@@ -5,7 +5,7 @@
 This repository provides an R script to predict gene expression levels using pre-trained Random Forest (CRE-RF) models. The models are stored on Zenodo, and users can download, unzip, and use them for prediction on their own data.
 
 ## Table of Contents
-
+- [CRE-RF](#CRE-RF)
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -16,6 +16,8 @@ This repository provides an R script to predict gene expression levels using pre
 - [File Structure](#file-structure)
 - [Notes](#notes)
 - [License](#license)
+
+## CRE-RF
 
 ## Overview
 
@@ -154,3 +156,6 @@ gene-expression-prediction/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE] file for details.
+
+## Binned-CNN
+This section describes the Binned-CNN approach.
