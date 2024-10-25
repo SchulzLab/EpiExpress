@@ -70,17 +70,12 @@ unzip_path <- "/path/to/unzip/directory"
 download_models_from_zenodo(zenodo_url, download_path, unzip_path)
 ```
 
-Also, add `test_samples_file`, `train_samples_file` paths in the script:
-```r
-test_samples_file <- "/path/to/test_samples/directory"
-train_samples_file <- "/path/to/train_samples/directory"
-```
 
 ### 2. Prepare Input Data
 
 You need to prepare two main input files:
-1. **Gene Expression Data**: A file for each gene containing log-transformed expression levels, stored in a directory.
-2. **Train/Test Sample Files**: CSV files containing lists of sample IDs for training and testing.
+1. **Input data (unseen data)**: A file for each gene containing h3k27ac signal for desired samples, stored in a directory.
+
 
 Example file structure for gene expression data:
 
@@ -107,7 +102,6 @@ To predict the expression of a single gene, use the following function:
 ```r
 predict_gene_expression(
   gene_name = "ENSG00000123456",  # Example gene name
-  train_samples_file = "/path/to/train_samples.csv",
   test_samples_file = "/path/to/test_samples.csv",
   input_data_dir = "/path/to/input_data",  # Directory containing the gene files
   models_dir = "/path/to/unzipped/models",  # Directory containing unzipped models
@@ -122,7 +116,6 @@ To predict for multiple genes listed in a file, use the `predict_multiple_genes`
 ```r
 predict_multiple_genes(
   gene_list_file = "/path/to/gene_list.txt",  # File with a list of gene names (one gene per line)
-  train_samples_file = "/path/to/train_samples.csv",
   test_samples_file = "/path/to/test_samples.csv",
   input_data_dir = "/path/to/input_data",  # Directory containing the gene files
   models_dir = "/path/to/unzipped/models",  # Directory containing unzipped models
