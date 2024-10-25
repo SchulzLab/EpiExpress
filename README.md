@@ -89,7 +89,7 @@ input_data/
 
 Each file should contain tab-delimited data with at least two columns:
 - `Sample`: The sample IDs.
-- Other columns: Gene expression values for that gene.
+- Other columns: H3k27ac signal values for that gene.
 
 ### 3. Run Predictions
 
@@ -135,7 +135,7 @@ The results for multiple genes will be aggregated into a single CSV file.
 ## Notes
 
 - Ensure that the gene expression files and the model names match. For example, if your gene file is named `ENSG00000123456.txt.gz`, the corresponding model should be `ENSG00000123456.RDS`.
-- The input files should be properly formatted with correct sample IDs and gene expression values.
+- The input files should be properly formatted with correct sample IDs and H3k27ac values.
 - Save train_samples_file and test_samples_file in your directory.
 
 ## License
