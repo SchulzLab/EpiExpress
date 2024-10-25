@@ -89,7 +89,7 @@ input_data/
 
 Each file should contain tab-delimited data with at least two columns:
 - `Sample`: The sample IDs.
-- Other columns: H3k27ac signal values for that gene.
+- Other columns: H3k27ac signal values for the regions.
 
 ### 3. Run Predictions
 
