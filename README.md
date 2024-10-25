@@ -74,7 +74,7 @@ download_models_from_zenodo(zenodo_url, download_path, unzip_path)
 ### 2. Prepare Input Data
 
 You need to prepare two main input files:
-1. **Input data (unseen data)**: A file for each gene containing h3k27ac signal for desired samples, stored in a directory.
+1. **Input data (unseen data)**: A file for each gene containing H3k27ac signal for desired samples, stored in a directory.
 
 
 Example file structure for gene expression data:
