@@ -136,7 +136,7 @@ The results for multiple genes will be aggregated into a single CSV file.
 
 - Ensure that the gene expression files and the model names match. For example, if your gene file is named `ENSG00000123456.txt.gz`, the corresponding model should be `ENSG00000123456.RDS`.
 - The input files should be properly formatted with correct sample IDs and H3k27ac values.
-- Save train_samples_file and test_samples_file in your directory.
+
 
 ## License
 
