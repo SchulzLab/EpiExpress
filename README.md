@@ -41,14 +41,7 @@ install.packages(c("randomForest", "dplyr"))
 
 ## Installation
 
-Clone the repository to your local machine:
-
-```bash
-git clone https://github.com/your-username/gene-expression-prediction.git
-cd gene-expression-prediction
-```
-
-Alternatively, download the script files from GitHub.
+Download the script files from GitHub.
 
 ## Usage
 
