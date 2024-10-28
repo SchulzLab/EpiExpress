@@ -1,9 +1,9 @@
 {
   "bigwigs": "ExampleData/bigwigs/*_chr21.bigwig",
-  "gtf_file": "ExampleData/gencode.v38.annotation_chr21Genes.gtf",
-  "gene_file": "ExampleData/GeneList.txt",
   "mode": "CRE,binned",
+  "out_folder": "TestOutput/",
+  "gene_file": "ExampleData/GeneList.txt",
   "Gene_CRE_file": "ExampleData/CRE_GenePeakMap_Example.txt.gz",
+  "gtf_file": "ExampleData/gencode.v38.annotation_chr21Genes.gtf",
   "cores": 1,
-  "out_folder": "ExampleOutput/"
 }

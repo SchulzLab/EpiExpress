@@ -66,9 +66,30 @@ download_models_from_zenodo(zenodo_url, download_path, unzip_path)
 
 ### 2. Prepare Input Data
 
-You need to prepare one input file for each gene:
-1. **Input data (unseen data)**: A file for each gene containing H3k27ac signal for desired samples, stored in a directory.
+To get gene expression predictions on your own data, we provide scripts to generate the input files
+for the models in the right format, both for the CRE- and the Binned-feature setup. Both setups are based on a matrix of samples*genomic regions filled with the H3K7ac ChiP-seq signal. The CRE setup uses the ENCODE CREs within a 1 MB window around a gene's 5'TSS as genomic regions. The Binned setup splits the 1 MB window into consecutive bins of size 100 bp. For your own data, you'll only need H3K27ac
+ChIP-seq BigWig-files that should contain the fold-change over the control. The other required data can be downloaded or
+are provided by us. You will have to create a JSON-file with the paths as shown below. You can find an [example JSON file here](https://github.com/SchulzLab/ExpressionPredictionModels/blob/main/GenerateInput/Example_InputRun.JSON):
 
+| Parameter       | Description                                                                                                                                                                                                                                                                                                                                                                          |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `bigwigs`       | Bigwigs from which to take the average signal in the region features from.Can either be a list (e.g. ["path1.bw", "path2.bw"]), a folder from which all .bw and .bigwig files will be taken (e.g. "bigwig_folder/"), or a path pattern where all files matching the pattern will be used and the string at the asterisk will be used as sample ID (e.g. "bigwig_folder/sample*.bw"). |
+| `mode`          | Which output files to produce. Either 'all' or 'CRE,Binned' to get both feature types, 'CRE' for only CRE-based or 'Binned' for only Binned.                                                                                                                                                                                                                                         |
+| `out_folder`    | Output folder to which the files will be written to.                                                                                                                                                                                                                                                                                                                                 |
+| `gene_file`     | A file with Ensembl IDs (one per line) for which the output will be generated.                                                                                                                                                                                                                                                                                                       |
+| `Gene_CRE_file` | Path to the mapping file "CRE_GenePeakMap_Example.txt.gz", available in the Zenodo repository. Only required for the CRE mode.                                                                                                                                                                                                                                                       |
+| `gtf_file`      | Path to the hg38 gtf-file, available at [GENCODE](https://www.gencodegenes.org/human/release_38.html). It has to be the comprehensive gene annotation with reference chromosomes only (gencode.v38.annotation.gtf.gz) to ensure the same regions per gene. Required for the Binned mode only.                                                                                        |
+| `cores`         | Number of cores to use for steps that are parallelized (Default 1).                                                                                                                                                                                                                                                                                                                  |
+
+To test the input generation and see the output files' format, have a look at the [GenerateInput folder](https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/GenerateInput).
+There, we provide the scripts and a miniature examples of the files. Inside the folder you can call:
+
+```
+python3 BigWigToInput.py Example_InputRun.JSON
+```
+
+The script BigWigToInput.py writes the output based on the information given by Example_InputRun.JSON, or your own JSON-file. The output produced 
+by this example run is also stored in [ExampleOutput](https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/GenerateInput/ExampleOutput).
 
 Example file structure for gene expression data:
 
