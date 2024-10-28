@@ -4,10 +4,11 @@ library(dplyr)
 library(utils)
 
 # Define your file paths
-zenodo_url <- "https://zenodo.org/record/your_record_id/files/models.zip"  # Replace with the actual Zenodo URL (its it README file)
+zenodo_url <- "https://zenodo.org/record/your_record_id/files/models.zip"  # Replace with the actual Zenodo URL
 download_path <- "/path/to/download/directory"
 unzip_path <- "/path/to/unzip/directory"
-
+input_data_dir <- "/path/to/test_samples/directory"  # This now contains user input data
+output_dir <- "/path/to/output/directory"
 
 # Function to download the models zip file from Zenodo
 download_models_from_zenodo <- function(zenodo_url, download_path, unzip_path) {
@@ -51,8 +52,7 @@ rescale <- function(x, min_val, max_val) {
 }
 
 # Function to load model and predict gene expression
-predict_gene_expression <- function(gene_name, train_samples_file, test_samples_file, input_data_dir, models_dir, output_dir) {
-  
+predict_gene_expression <- function(gene_name, input_data_dir, models_dir, output_dir) {
   # Load data for the specific gene
   gene_file_path <- file.path(input_data_dir, paste0(gene_name, ".txt.gz"))
   
@@ -66,27 +66,17 @@ predict_gene_expression <- function(gene_name, train_samples_file, test_samples_
     df2 <- log2(df2 + 1)
     df3 <- cbind(df_samples, df2)
     
-    # Split into train and test samples
-    train_samples <- read.csv(train_samples_file)[, 1]
-    test_samples <- read.csv(test_samples_file)[, 1]
-    train_data <- df3[df3$df_samples %in% train_samples, ]
-    test_data <- df3[df3$df_samples %in% test_samples, ]
+    # Prompt user for sample names
+    sample_names_input <- readline(prompt = "Enter the sample names separated by commas: ")
+    sample_names <- unlist(strsplit(sample_names_input, ","))
     
-    # Normalize train data
-    train_min_values <- apply(train_data, 2, min)
-    train_max_values <- apply(train_data, 2, max)
-    train_data_normalized <- as.data.frame(apply(train_data[, 2:ncol(train_data)], 2, normalize_min_max))
+    # Select user-defined samples
+    user_data <- df3[df3$df_samples %in% trimws(sample_names), ]
     
-    # Normalize test data using train min/max values
-    test_data_normalized <- min_max_normalize_test(test_data[, 2:ncol(test_data)], train_min_values, train_max_values)
-    
-    # Train data target
-    training <- train_data_normalized[, 1:ncol(train_data_normalized)-1]
-    training_target <- train_data_normalized[, ncol(train_data_normalized)]
-    
-    # Test data target
-    test1 <- test_data_normalized[, 1:ncol(test_data_normalized)-1]
-    test1_target <- test_data_normalized[, ncol(test_data_normalized)]
+    # Normalize data
+    train_min_values <- apply(user_data, 2, min)
+    train_max_values <- apply(user_data, 2, max)
+    user_data_normalized <- as.data.frame(apply(user_data[, 2:ncol(user_data)], 2, normalize_min_max))
     
     # Load the pre-trained model from the local directory
     model_path <- file.path(models_dir, paste0(gene_name, ".RDS"))
@@ -95,28 +85,15 @@ predict_gene_expression <- function(gene_name, train_samples_file, test_samples_
     }
     Best_model <- readRDS(model_path)
     
-    # Predict on test data
-    predicted_test <- predict(Best_model, test1)
-    
-    # Calculate MSE and correlation
-    MSE1 <- mean((test1_target - predicted_test)^2)
-    cor1 <- cor(test1_target, predicted_test)
-    
-    # Rescale the predictions back to the original scale
-    min_origin_target <- min(training_target)
-    max_origin_target <- max(training_target)
-    scaled_predicted_target <- rescale(predicted_test, min_origin_target, max_origin_target)
-    scaled_original_target <- rescale(test1_target, min_origin_target, max_origin_target)
-    MSE_backscaled <- mean((scaled_original_target - scaled_predicted_target)^2)
+    # Predict on user data
+    predicted_test <- predict(Best_model, user_data_normalized)
     
     # Save the results
     results <- data.frame(
       Gene = gene_name,
-      MSE_RF = MSE1,
-      Cor_RF = cor1,
-      MSE_back_scaled_RF = MSE_backscaled
+      Predicted_Values = predicted_test
     )
-    write.csv(results, file.path(output_dir, paste0(gene_name, "_prediction_results.csv")), row.names = FALSE)
+    write.csv(results, file.path(output_dir, paste0(gene_name, "_user_input_prediction_results.csv")), row.names = FALSE)
     
     return(results)
   } else {
@@ -125,13 +102,16 @@ predict_gene_expression <- function(gene_name, train_samples_file, test_samples_
 }
 
 # Main function to process multiple genes
-predict_multiple_genes <- function(gene_list_file, train_samples_file, test_samples_file, input_data_dir, models_dir, output_dir) {
+predict_multiple_genes <- function(gene_list_file, input_data_dir, models_dir, output_dir) {
   gene_list <- read.table(gene_list_file, header = FALSE, col.names = "Gene")
   
   results <- lapply(gene_list$Gene, function(gene_name) {
-    predict_gene_expression(gene_name, train_samples_file, test_samples_file, input_data_dir, models_dir, output_dir)
+    predict_gene_expression(gene_name, input_data_dir, models_dir, output_dir)
   })
   
   final_results <- do.call(rbind, results)
-  write.csv(final_results, file.path(output_dir, "all_genes_prediction_results.csv"), row.names = FALSE)
+  write.csv(final_results, file.path(output_dir, "all_genes_user_input_prediction_results.csv"), row.names = FALSE)
 }
+
+# Example of calling the main function
+# predict_multiple_genes("gene_list.txt", input_data_dir, models_dir, output_dir)
