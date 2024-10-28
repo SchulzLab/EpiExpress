@@ -1,44 +1,29 @@
-# Load necessary libraries
-library(randomForest)
+
+---
+
+### R Script for CRE-RF Predictions (CRE_predict_RF.R)
+
+The script below will load the model, normalize the test data, make predictions, and save the results based on the JSON configuration.
+
+```r
+# CRE_predict_RF.R
+
+# Load required packages
 library(dplyr)
-library(utils)
+library(randomForest)
+library(jsonlite)
 
-# Define your file paths
-zenodo_url <- "https://zenodo.org/record/your_record_id/files/models.zip"  # Replace with the actual Zenodo URL
-download_path <- "/path/to/download/directory"
-unzip_path <- "/path/to/unzip/directory"
-input_data_dir <- "/path/to/test_samples/directory"  # This now contains user input data
-output_dir <- "/path/to/output/directory"
-
-# Function to download the models zip file from Zenodo
-download_models_from_zenodo <- function(zenodo_url, download_path, unzip_path) {
-  # Download the zip file
-  zip_file <- file.path(download_path, "models.zip")
-  download.file(zenodo_url, zip_file, mode = "wb")
-  
-  # Unzip the file to the specified directory
-  unzip(zip_file, exdir = unzip_path)
-  message("Models downloaded and unzipped successfully.")
-}
-
-# Define normalization functions
-normalize_min_max <- function(data) {
-  if(max(data) == min(data)) {
-    return(0)
-  }
-  return((data - min(data)) / (max(data) - min(data)))
-}
-
-min_max_normalize_test <- function(data, min_values, max_values) {
+# Function to normalize test data using pre-saved min and max values
+normalize_test_data <- function(data, min_values, max_values) {
   normalized_data <- data.frame(
     lapply(names(data), function(col) {
       min_val <- min_values[col]
       max_val <- max_values[col]
       
       if (max_val == min_val) {
-        rep(0, length(data[[col]]))
+        return(rep(0, length(data[[col]])))
       } else {
-        (data[[col]] - min_val) / (max_val - min(min_values[[col]], max_values[[col]]))
+        (data[[col]] - min_val) / (max_val - min_val)
       }
     })
   )
@@ -46,67 +31,52 @@ min_max_normalize_test <- function(data, min_values, max_values) {
   return(normalized_data)
 }
 
-# Function to load model and predict gene expression
-predict_gene_expression <- function(gene_name, input_data_dir, models_dir, output_dir) {
-  # Load data for the specific gene
-  gene_file_path <- file.path(input_data_dir, paste0(gene_name, ".txt.gz"))
+# Load configuration from JSON file
+args <- commandArgs(trailingOnly = TRUE)
+config_path <- args[1]
+config <- fromJSON(config_path)
+
+models_path <- config$models_path
+input_path <- config$input_path
+output_path <- config$output_path
+min_max_file <- config$min_max_file
+
+# Load min and max values for normalization
+min_max_values <- readRDS(min_max_file)
+
+# Loop through each gene input file
+input_files <- list.files(input_path, pattern = "\\.txt.gz$", full.names = TRUE)
+for (file in input_files) {
+  gene_name <- tools::file_path_sans_ext(basename(file))
   
-  if (file.exists(gene_file_path)) {
-    df <- read.table(gene_file_path, header = TRUE, sep = "\t")
-    df <- df[order(df$Sample), ]
-    rownames(df) <- NULL
-    df <- df[, colSums(df != 0) > 0]  # Remove columns with all 0s
-    df_samples <- df[, 1]
-    df2 <- df[, 2:ncol(df)]
-    df2 <- log2(df2 + 1)
-    df3 <- cbind(df_samples, df2)
+  # Load input data
+  df <- read.table(file, header = TRUE, sep = "\t")
+  df <- df[order(df$Sample),]
+  rownames(df) <- NULL
+  df <- df[, colSums(df != 0) > 0]
+  
+  # Normalize data using stored min/max values
+  df_data <- log2(df[,-1] + 1)
+  normalized_data <- normalize_test_data(df_data, min_values = min_max_values[[gene_name]]$min, max_values = min_max_values[[gene_name]]$max)
+  
+  # Load model
+  model_file <- file.path(models_path, paste0(gene_name, ".RDS"))
+  if (file.exists(model_file)) {
+    rf_model <- readRDS(model_file)
     
-    # Prompt user for sample names
-    sample_names_input <- readline(prompt = "Enter the sample names separated by commas: ")
-    sample_names <- unlist(strsplit(sample_names_input, ","))
+    # Predict expression values
+    predicted_values <- predict(rf_model, normalized_data)
     
-    # Select user-defined samples
-    user_data <- df3[df3$df_samples %in% trimws(sample_names), ]
+    # Rescale predicted values
+    min_origin <- min_max_values[[gene_name]]$target_min
+    max_origin <- min_max_values[[gene_name]]$target_max
+    rescaled_predictions <- (predicted_values * (max_origin - min_origin)) + min_origin
     
-    # Normalize data
-    train_min_values <- apply(user_data, 2, min)
-    train_max_values <- apply(user_data, 2, max)
-    user_data_normalized <- as.data.frame(apply(user_data[, 2:ncol(user_data)], 2, normalize_min_max))
-    
-    # Load the pre-trained model from the local directory
-    model_path <- file.path(models_dir, paste0(gene_name, ".RDS"))
-    if (!file.exists(model_path)) {
-      stop(paste("Model for gene", gene_name, "not found"))
-    }
-    Best_model <- readRDS(model_path)
-    
-    # Predict on user data
-    predicted_test <- predict(Best_model, user_data_normalized)
-    
-    # Save the results
-    results <- data.frame(
-      Gene = gene_name,
-      Predicted_Values = predicted_test
-    )
-    write.csv(results, file.path(output_dir, paste0(gene_name, "_user_input_prediction_results.csv")), row.names = FALSE)
-    
-    return(results)
+    # Save results
+    output_file <- file.path(output_path, paste0(gene_name, "_predictions.txt"))
+    write.table(data.frame(Sample = df$Sample, Prediction = rescaled_predictions), output_file, row.names = FALSE, sep = "\t")
+    print(paste("Predictions saved for", gene_name))
   } else {
-    stop(paste("Gene data for", gene_name, "not found"))
+    print(paste("Model for gene", gene_name, "not found."))
   }
 }
-
-# Main function to process multiple genes
-predict_multiple_genes <- function(gene_list_file, input_data_dir, models_dir, output_dir) {
-  gene_list <- read.table(gene_list_file, header = FALSE, col.names = "Gene")
-  
-  results <- lapply(gene_list$Gene, function(gene_name) {
-    predict_gene_expression(gene_name, input_data_dir, models_dir, output_dir)
-  })
-  
-  final_results <- do.call(rbind, results)
-  write.csv(final_results, file.path(output_dir, "all_genes_user_input_prediction_results.csv"), row.names = FALSE)
-}
-
-# Example of calling the main function
-# predict_multiple_genes("gene_list.txt", input_data_dir, models_dir, output_dir)
