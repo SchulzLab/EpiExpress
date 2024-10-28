@@ -46,11 +46,6 @@ min_max_normalize_test <- function(data, min_values, max_values) {
   return(normalized_data)
 }
 
-# Rescaling function to reverse normalization
-rescale <- function(x, min_val, max_val) {
-  return((x * (max_val - min_val)) + min_val)
-}
-
 # Function to load model and predict gene expression
 predict_gene_expression <- function(gene_name, input_data_dir, models_dir, output_dir) {
   # Load data for the specific gene
