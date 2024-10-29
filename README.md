@@ -30,7 +30,7 @@ The CRE-RF models are built using Random Forest (RF) in R for ~ 28,000 genes, an
 The Binned-CNN models are built using Keras in python for ~ 28,000 genes, and the predictions are based on a user's dataset containing the same features.
 
 ## Requirements 
-### CRE-RF Requirements
+#### CRE-RF Requirements
  - R version 4.0 or higher
  - R libraries: `randomForest`, `dplyr`, `utils`, `jsonlite`
 
