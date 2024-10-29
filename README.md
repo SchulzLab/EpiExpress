@@ -21,8 +21,8 @@ This repository provides an R script to predict gene expression levels using pre
 ## Overview
 
 This repository allows users to:
-- Download pre-trained gene expression models from Zenodo.
-- Load your own data for prediction.
+- Download pre-trained models from Zenodo.
+- Build your own input data for prediction.
 - Predict gene expression using the pre-trained models.
 - Generating the results (predicted expression).
 
