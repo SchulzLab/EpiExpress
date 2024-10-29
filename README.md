@@ -4,7 +4,6 @@
 This repository provides an R script to predict gene expression levels using pre-trained Random Forest (CRE-RF) models and Python script to predict gene expression levels using pre-trained CNN (Binned-CNN) models. The models are stored on Zenodo, and users can download, unzip, and use them for prediction on their own data.
 
 ## Table of Contents
-- [CRE-RF](#CRE-RF)
   - [Overview](#overview)
   - [Requirements](#requirements)
   - [Installation](#installation)
@@ -14,7 +13,7 @@ This repository provides an R script to predict gene expression levels using pre
     - [3. Run Predictions](#3-run-predictions)
   - [Notes](#notes)
   - [License](#license)
-- [Binned-CNN](#Binned-CNN)
+
 
 
 
@@ -45,7 +44,7 @@ install.packages(c("randomForest", "dplyr", "utils", "jsonlite"))
 
 ### 1. Download Pre-Trained Models from Zenodo
 
-Before running the predictions, you need to download the pre-trained models from Zenodo. The models are provided as a zip file containing 28,000 Random Forest models, one for each gene.
+Before running the predictions, you need to download the pre-trained models from Zenodo. The models for each methods are provided as a tar file containing ~ 28,000 models, one for each gene.
 
 **Steps:**
 - Go to the [Zenodo record](https://zenodo.org/records/13945441).
