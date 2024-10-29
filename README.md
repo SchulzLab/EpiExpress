@@ -6,7 +6,6 @@ This repository provides an R script to predict gene expression levels using pre
 ## Table of Contents
   - [Overview](#overview)
   - [Requirements](#requirements)
-  - [Installation](#installation)
   - [Usage](#usage)
     - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
     - [2. Prepare Input Data](#2-prepare-input-data)
