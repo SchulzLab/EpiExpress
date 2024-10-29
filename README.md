@@ -114,18 +114,19 @@ bash
 git clone https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/Binned_CNN_Prediction.git
 
 ```
-#### Predict for a Single Gene
+#### 4. Run the script by specifying the path to your configuration JSON file:
 
-To predict the expression of a single gene, use the following function:
+To predict the expression by CRE-RF run this command:
 
-```r
-predict_gene_expression(
-  gene_name = "ENSG00000123456",  # Example gene name
-  test_samples_file = "/path/to/test_samples.csv",
-  input_data_dir = "/path/to/input_data",  # Directory containing the gene files
-  models_dir = "/path/to/unzipped/models",  # Directory containing unzipped models
-  output_dir = "/path/to/output"  # Directory to save the results
-)
+```bash
+Rscript CRE-RF/CRE_Predict_RF.R path/to/config.json
+
+```
+
+To predict the expression by Binned-CNN run this command:
+```bash
+Rscript Binned_CNN_prediction/CNN_prediction.py path/to/config.json
+
 ```
 
 #### Predict for Multiple Genes
