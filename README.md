@@ -26,9 +26,10 @@ This repository allows users to:
 - Predict gene expression using the pre-trained models.
 - Generating the results (predicted expression).
 
-The models are built using Random Forest (RF) for ~ 28,000 genes, and the predictions are based on a user's dataset containing the same features.
+The CRE-RF models are built using Random Forest (RF) in R for ~ 28,000 genes, and the predictions are based on a user's dataset containing the same features.
+The Binned-CNN models are built using Keras package in python for ~ 28,000 genes, and the predictions are based on a user's dataset containing the same features.
 
-## Requirements
+## Requirements 
 
 - R version 4.0 or higher
 - R libraries: `randomForest`, `dplyr`, `utils`, `jsonlite`
