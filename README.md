@@ -10,7 +10,7 @@ This repository provides an R script to predict gene expression levels using pre
     - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
     - [2. Prepare Input Data](#2-prepare-input-data)
     - [3. Clone the repository](#3-Clone-the-repository)
-    - [4. Prediction](#4-Predicrion)
+    - [4. Prediction](#4-prediction)
   - [Notes](#notes)
   - [License](#license)
 
