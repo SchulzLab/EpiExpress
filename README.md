@@ -98,18 +98,13 @@ Each file should contain tab-delimited data with at least two columns:
 - Other columns: H3k27ac signal values for the regions.
 
 ### 3. Clone the repository 
-- for CRE-RF Use the following command
+
 ```bash
 
-git clone https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/CRE_RF_Prediction.git
+git clone https://github.com/SchulzLab/ExpressionPredictionModels.git
 
 ```
-- for Binned-CNN Use the following command
-```bash
 
-git clone https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/Binned_CNN_Prediction.git
-
-```
 #### 4. Run the script by specifying the path to your configuration JSON file:
 
 To predict the expression by CRE-RF, run this command:
