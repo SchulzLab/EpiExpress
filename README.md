@@ -16,7 +16,7 @@ This repository provides an R script to predict gene expression levels using pre
   - [License](#license)
 - [Binned-CNN](#Binned-CNN)
 
-## CRE-RF
+
 
 ## Overview
 
