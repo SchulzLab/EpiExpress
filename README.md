@@ -10,6 +10,7 @@ This repository provides an R script to predict gene expression levels using pre
     - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
     - [2. Prepare Input Data](#2-prepare-input-data)
     - [3. Clone the repository](#3-Clone-the-repository)
+    - [4. Prediction](#4-Predicrion)
   - [Notes](#notes)
   - [License](#license)
 
@@ -104,8 +105,8 @@ git clone https://github.com/SchulzLab/ExpressionPredictionModels.git
 
 ```
 
-#### 4. Run the script by specifying the path to your configuration JSON file:
-
+### 4. Prediction
+#### Run the script by specifying the path to your configuration JSON file:
 To predict the expression by CRE-RF, run this command:
 
 ```bash
