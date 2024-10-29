@@ -99,10 +99,21 @@ Each file should contain tab-delimited data with at least two columns:
 - `Sample`: The sample IDs.
 - Other columns: H3k27ac signal values for the regions.
 
-### 3. Run Predictions
+### 3. Clone the repository 
+- for CRE-RF Use the following command
+```
+bash
 
-Now you can run the script "CRE_RF_Prediction.R" to predict gene expression using the pre-trained models. You can predict for a single gene or multiple genes.
+git clone https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/CRE_RF_Prediction.git
 
+```
+- for Binned-CNN Use the following command
+```
+bash
+
+git clone https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/Binned_CNN_Prediction.git
+
+```
 #### Predict for a Single Gene
 
 To predict the expression of a single gene, use the following function:
