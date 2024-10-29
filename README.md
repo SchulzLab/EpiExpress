@@ -112,14 +112,14 @@ git clone https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/Binn
 ```
 #### 4. Run the script by specifying the path to your configuration JSON file:
 
-To predict the expression by CRE-RF run this command:
+To predict the expression by CRE-RF, run this command:
 
 ```bash
 Rscript CRE-RF/CRE_Predict_RF.R path/to/config.json
 
 ```
 
-To predict the expression by Binned-CNN run this command:
+To predict the expression by Binned-CNN, run this command:
 ```bash
 Rscript Binned_CNN_prediction/CNN_prediction.py path/to/config.json
 
