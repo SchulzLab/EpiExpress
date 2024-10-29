@@ -51,17 +51,10 @@ Before running the predictions, you need to download the pre-trained models from
 
 **Steps:**
 - Go to the [Zenodo record](https://zenodo.org/records/13945441).
-- Download the zip file (`models.zip`) containing the pre-trained models.
-- Unzip the file into a directory on your local machine.
-
-Alternatively, you can automate the download and unzip process by running the script in R. Update the `zenodo_url`, `download_path`, `unzip_path` in the script:
-
-```r
-zenodo_url <- "https://zenodo.org/record/your_record_id/files/models.zip"  # Replace with actual Zenodo URL
-download_path <- "/path/to/download/directory"
-unzip_path <- "/path/to/unzip/directory"
-download_models_from_zenodo(zenodo_url, download_path, unzip_path)
-```
+- Download the tar file for models (`models.tar`) containing the pre-trained models.
+- Download the tar file for min-max coefficents (`min_max.tar`) containing the min-max coefficent for each gene.
+- Unzip the files into one directory on your local machine.
+_ you will have to add this path in the JSON file in the "prepare input data" part.
 
 
 ### 2. Prepare Input Data
