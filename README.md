@@ -51,9 +51,9 @@ Before running the predictions, you need to download the pre-trained models from
 
 **Steps:**
 - Go to the [Zenodo record](https://zenodo.org/records/13945441).
-- Download the tar file for models (`models.tar`) containing the pre-trained models.
-- Download the tar file for min-max coefficents (`min_max.tar`) containing the min-max coefficent for each gene.
-- Unzip the files into one directory on your local machine.
+  - If you would like to use CRE-RF download CRE_RF_models.tar and RF_min_max.tar files.
+  - If you would like to use Binned-CNN download Binned_CNN_models.tar and CNN_min_max.tar files.
+- Uncompress the files into one directory on your local machine.
 _ you will have to add this path in the JSON file in the "prepare input data" part.
 
 
