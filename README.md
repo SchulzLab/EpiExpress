@@ -127,38 +127,17 @@ Rscript Binned_CNN_prediction/CNN_prediction.py path/to/config.json
 
 ```
 
-#### Predict for Multiple Genes
-
-To predict for multiple genes listed in a file, use the `predict_multiple_genes` function:
-
-```r
-predict_multiple_genes(
-  gene_list_file = "/path/to/gene_list.txt",  # File with a list of gene names (one gene per line)
-  test_samples_file = "/path/to/test_samples.csv",
-  input_data_dir = "/path/to/input_data",  # Directory containing the gene files
-  models_dir = "/path/to/unzipped/models",  # Directory containing unzipped models
-  output_dir = "/path/to/output"  # Directory to save the results
-)
-```
 
 ### Output
 
-For each gene, the script will generate a CSV file with the prediction results. It includes:
-- Mean Squared Error (MSE) between the predicted and actual values.
-- Correlation between the predicted and actual values.
-- Back-scaled MSE after reversing normalization.
-
-The results for multiple genes will be aggregated into a single CSV file.
+For each gene, the script will generate a CSV file with the prediction results. 
 
 ## Notes
 
 - Ensure that the gene expression files and the model names match. For example, if your gene file is named `ENSG00000123456.txt.gz`, the corresponding model should be `ENSG00000123456.RDS`.
-- The input files should be properly formatted with correct sample IDs and H3k27ac values.
 
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE] file for details.
 
-## Binned-CNN
-This section describes the Binned-CNN approach. Updating!
