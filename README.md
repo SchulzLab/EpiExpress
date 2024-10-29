@@ -41,10 +41,6 @@ Install these libraries in R if you don’t have them already:
 install.packages(c("randomForest", "dplyr", "utils", "jsonlite"))
 ```
 
-## Installation
-
-
-
 ## Usage
 
 ### 1. Download Pre-Trained Models from Zenodo
