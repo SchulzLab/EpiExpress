@@ -24,7 +24,7 @@ This repository allows users to:
 - Download pre-trained gene expression models from Zenodo.
 - Load your own data for prediction.
 - Predict gene expression using the pre-trained models.
-- Generate results, including Mean Squared Error (MSE) and correlation, for the predicted and actual values.
+- Generating the results (predicted expression).
 
 The models are built using Random Forest (RF) for ~ 28,000 genes, and the predictions are based on a user's dataset containing the same features.
 
