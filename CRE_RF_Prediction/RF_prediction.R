@@ -1,5 +1,8 @@
 # Load necessary libraries
 library(jsonlite)
+library(randomForest)
+library(dplyr)
+library(utils)
 
 # Load the JSON file path from command-line arguments
 args <- commandArgs(trailingOnly = TRUE)
@@ -21,10 +24,17 @@ scale_data <- function(data, min_values, max_values) {
 load_min_max <- function(gene_name) {
   min_max_file <- file.path(model_dir, paste0(gene_name, "_min_max.txt"))
   
-  # Read min-max values for each column (each line has min and max values per column)
-  min_max_data <- read.table(min_max_file, header = FALSE)
-  min_values <- min_max_data[, 1]  # First column is min values
-  max_values <- min_max_data[, 2]  # Second column is max values
+  # Read min-max values for each column 
+  min_max_data <- read.table(min_max_file, header = TRUE, sep = "\t")  # Ensure the correct separator
+  
+  # Check if the required columns are present
+  if (!all(c("Feature", "Min", "Max") %in% colnames(min_max_data))) {
+    stop("Min-max file must contain 'Feature', 'Min', and 'Max' columns.")
+  }
+  
+  # Extract min and max values for each feature
+  min_values <- min_max_data$Min
+  max_values <- min_max_data$Max
   
   return(list(min = min_values, max = max_values))
 }
@@ -52,6 +62,13 @@ for (input_file in input_files) {
   
   # Load min-max values for the gene and scale data
   min_max <- load_min_max(gene_name)
+  
+  # Check if input data columns match feature names in min-max
+  if (!all(colnames(data) %in% min_max$Feature)) {
+    stop("Some input data columns do not match features in the min-max file.")
+  }
+  
+  # Scale the data
   scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
   
   # Run predictions using the loaded model
