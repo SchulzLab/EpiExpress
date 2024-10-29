@@ -1,43 +1,67 @@
-
+# Load necessary libraries
 library(jsonlite)
 
-# Load config
-config <- fromJSON("path/to/config.json")
+# Load the JSON file path from command-line arguments
+args <- commandArgs(trailingOnly = TRUE)
+config_file <- args[1]  # User-specified JSON file path
+config <- fromJSON(config_file)
 
-# Extract paths from config
-model_path <- config$model_path
-input_dir <- config$input_data
-output_path <- config$output_path
-min_max_file <- config$min_max_file
+# Extract paths from JSON
+model_dir <- config$model_path               # Directory containing model files and min-max files
+input_dir <- config$out_folder               # Directory for input gene files (txt.gz) and output predictions
 
-# Load min/max values
-min_max_data <- read.csv(min_max_file, row.names = 1)
-
-# Function to normalize and predict gene expression
-predict_expression_rf <- function(gene_file) {
-  gene_name <- gsub(".txt.gz$", "", basename(gene_file))
-  model_file <- file.path(model_path, paste0(gene_name, ".RDS"))
-  
-  if (file.exists(model_file)) {
-    rf_model <- readRDS(model_file)
-    gene_data <- read.csv(gzfile(gene_file))
-    
-    # Apply min/max normalization if values are available for the gene
-    if (gene_name %in% rownames(min_max_data)) {
-      min_val <- min_max_data[gene_name, "min"]
-      max_val <- min_max_data[gene_name, "max"]
-      gene_data <- (gene_data - min_val) / (max_val - min_val)
-    } else {
-      message(paste("Min/max values for gene", gene_name, "not found. Skipping normalization."))
-    }
-    
-    predictions <- predict(rf_model, gene_data)
-    write.csv(predictions, file.path(output_path, paste0(gene_name, "_predictions.csv")))
-  } else {
-    message(paste("Model for gene", gene_name, "not found. Skipping."))
-  }
+# Function to scale data based on min-max values for each column
+scale_data <- function(data, min_values, max_values) {
+  scaled_data <- sweep(data, 2, min_values, FUN = "-")
+  scaled_data <- sweep(scaled_data, 2, max_values - min_values, FUN = "/")
+  return(scaled_data)
 }
 
-# Run predictions for all gene files in the input directory
-gene_files <- list.files(input_dir, pattern = "\\.txt.gz$", full.names = TRUE)
-lapply(gene_files, predict_expression_rf)
+# Load min-max values from a single file per gene
+load_min_max <- function(gene_name) {
+  min_max_file <- file.path(model_dir, paste0(gene_name, "_min_max.txt"))
+  
+  # Read min-max values for each column (each line has min and max values per column)
+  min_max_data <- read.table(min_max_file, header = FALSE)
+  min_values <- min_max_data[, 1]  # First column is min values
+  max_values <- min_max_data[, 2]  # Second column is max values
+  
+  return(list(min = min_values, max = max_values))
+}
+
+# Loop through all gene input files in input_dir with .txt.gz extension
+input_files <- list.files(input_dir, pattern = "\\.txt\\.gz$", full.names = TRUE)
+
+for (input_file in input_files) {
+  # Extract gene name from file name
+  gene_name <- sub("\\.txt\\.gz$", "", basename(input_file))
+  
+  # Load model for the gene
+  model_file <- file.path(model_dir, paste0(gene_name, ".RDS"))
+  if (!file.exists(model_file)) {
+    message(paste("Model not found for gene:", gene_name))
+    next
+  }
+  model <- readRDS(model_file)
+  
+  # Load input data
+  data <- read.table(input_file, header = TRUE)
+  
+  # Apply log transformation: log2(data + 1)
+  log_transformed_data <- log2(data + 1)
+  
+  # Load min-max values for the gene and scale data
+  min_max <- load_min_max(gene_name)
+  scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
+  
+  # Run predictions using the loaded model
+  predictions <- predict(model, newdata = scaled_data)
+  
+  # Save predictions to output_dir with the same gene name, as .csv
+  output_file <- file.path(input_dir, paste0(gene_name, "_predictions.csv"))
+  write.csv(predictions, output_file, row.names = FALSE)
+  
+  message(paste("Predictions saved for gene:", gene_name, "in", output_file))
+}
+
+message("Prediction process completed.")
