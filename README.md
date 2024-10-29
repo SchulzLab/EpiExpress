@@ -31,17 +31,17 @@ The models are built using Random Forest (RF) for ~ 28,000 genes, and the predic
 ## Requirements
 
 - R version 4.0 or higher
-- R libraries: `randomForest`, `dplyr`, `utils`
+- R libraries: `randomForest`, `dplyr`, `utils`, `jsonlite`
 
 Install these libraries in R if you don’t have them already:
 
 ```r
-install.packages(c("randomForest", "dplyr"))
+install.packages(c("randomForest", "dplyr", "utils", "jsonlite"))
 ```
 
 ## Installation
 
-Download the script files from GitHub.
+
 
 ## Usage
 
