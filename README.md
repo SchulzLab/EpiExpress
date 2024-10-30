@@ -58,10 +58,12 @@ Before running the predictions, you need to download the pre-trained models from
 
 ### 2. Prepare Input Data
 
-To get gene expression predictions on your own data, we provide scripts to generate the input files
-for the models in the right format, both for the CRE- and the Binned-feature setup. Both setups are based on a matrix of samples*genomic regions filled with the H3K7ac ChiP-seq signal. The CRE setup uses the ENCODE CREs within a 1 MB window around a gene's 5'TSS as genomic regions. The Binned setup splits the 1 MB window into consecutive bins of size 100 bp. For your own data, you'll only need H3K27ac
-ChIP-seq BigWig-files that should contain the fold-change over the control. The other required data can be downloaded or
-are provided by us. You will have to create a JSON-file with the paths as shown below. You can find an [example JSON file here](https://github.com/SchulzLab/ExpressionPredictionModels/blob/main/GenerateInput/Example_InputRun.JSON):
+To get gene expression predictions on your own data, you will need:
+- BigWig-files of H3K27ac ChIP-seq in hg38 for each sample that contain the fold-change over the control
+- To download the folder with the other required data we provide on Zenodo (TODO LINK).
+- Prepare a JSON file with the paths and options as explained below.
+
+We provide scripts to generate the input files for the models in the right format, both for the CRE- and the Binned-feature setup. Both setups are based on a matrix of samples*genomic regions filled with the H3K7ac ChiP-seq signal. The CRE setup uses the ENCODE CREs within a 1 MB window around a gene's 5'TSS as genomic regions. The Binned setup splits the 1 MB window into consecutive bins of size 100 bp. You will have to create a JSON-file with the paths as shown below. You can find an [example JSON file here](https://github.com/SchulzLab/ExpressionPredictionModels/blob/main/GenerateInput/Example_InputRun.JSON):
 
 | Parameter       | Description                                                                                                                                                                                                                                                                                                                                                                          |
 |-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
