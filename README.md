@@ -49,7 +49,7 @@ The Binned-CNN models are built using Keras in python for ~ 28,000 genes, and th
 Before running the predictions, you need to download the pre-trained models from Zenodo. The models for each methods are provided as a tar file containing ~ 28,000 models, one for each gene.
 
 **Steps:**
-- Go to the [Zenodo record](https://zenodo.org/records/13945441).
+- Go to the [Zenodo record](https://zenodo.org/uploads/13992024).
   - If you would like to use CRE-RF method, download CRE_RF_models.tar and RF_min_max.tar files.
   - If you would like to use Binned-CNN method, download Binned_CNN_models.tar and CNN_min_max.tar files.
 - Uncompress the files into one directory on your local machine.
