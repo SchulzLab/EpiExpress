@@ -15,6 +15,7 @@ from multiprocessing import Pool
 import argparse
 import shutil
 import json
+import sys
 import TSS_Fetcher
 import BigWig_Counter
 
@@ -30,18 +31,10 @@ args = parser.parse_args()
 
 input_dict = json.load(open(args.json_file))
 
-for entry in ['bigwigs', 'gene_file', 'mode', 'out_folder']:
+for entry in ['bigwigs', 'gene_file', 'mode', 'out_folder', 'provided_input']:
     if entry not in input_dict:
         print("ERROR: missing entry in JSON file for " + entry)
-        # sys.exit()
-
-if ('cre' in input_dict['mode'].lower() or 'all' in input_dict['mode'].lower()) and 'Gene_CRE_file' not in input_dict:
-    print("ERROR: when running CRE mode the Gene_CRE_file is required in the JSON file")
-    # sys.exit()
-
-if ('binned' in input_dict['mode'].lower() or 'all' in input_dict['mode'].lower()) and 'gtf_file' not in input_dict:
-    print("ERROR: when running Binned mode the gtf_file is required in the JSON file")
-    # sys.exit()
+        sys.exit()
 
 if 'cores' not in input_dict:
     input_dict['cores'] = 1
@@ -71,11 +64,25 @@ gene_set = set([x.strip().split('\t')[0] for x in open(input_dict['gene_file']) 
 # CRE-mode
 # --------------------------------------------------------------------------------------------------
 if input_dict['mode'] == 'all' or 'cre' in input_dict['mode'].lower():
+    cre_out_folder = input_dict['out_folder'] + '/' + 'CRE_input/'
+    if not os.path.isdir(cre_out_folder):
+        os.mkdir(cre_out_folder)
+    # Get the path to the gene-CRE mapping, only allow the name of the full one and the mini example.
+    if os.path.isfile(input_dict['provided_input'] + '/' + 'CRE_GenePeakMap.txt.gz'):
+        gene_cre_file = input_dict['provided_input'] + '/' + 'CRE_GenePeakMap.txt.gz'
+    else:
+        if os.path.isfile(input_dict['provided_input'] + '/' + 'CRE_GenePeakMap_Example.txt.gz'):
+            gene_cre_file = input_dict['provided_input'] + '/' + 'CRE_GenePeakMap_Example.txt.gz'
+        else:
+            print("ERROR: missing the mapping file for CREs to genes in the provided input folder. Expected" +
+                  input_dict['provided_input'] + '/' + 'CRE_GenePeakMap.txt.gz')
+            sys.exit()
+
     startcre = clock()
     print("Writing input files for CRE mode")
     # First get the mapping of regions to genes.
     gene_peaks_map = {}
-    with gzip.open(input_dict['Gene_CRE_file'], 'rt') as map_in:
+    with gzip.open(gene_cre_file, 'rt') as map_in:
         for row in map_in:
             gene = row.strip().split('\t')[0]
             if gene in gene_set:
@@ -89,7 +96,7 @@ if input_dict['mode'] == 'all' or 'cre' in input_dict['mode'].lower():
     peaks_counts_dict = {'-'.join([str(y).replace('chr', '') for y in val[:3]]): val[3:] for val in peaks_counts.values}
 
     def write_gene(this_gene):
-        window_out = input_dict['out_folder'] + '/InputCRE_' + this_gene + '.txt'
+        window_out = cre_out_folder + this_gene + '.txt'
         these_peaks = gene_peaks_map[this_gene]
         if these_peaks:
             with open(window_out, 'w') as window:
@@ -108,18 +115,32 @@ if input_dict['mode'] == 'all' or 'cre' in input_dict['mode'].lower():
 # Binned-mode
 # --------------------------------------------------------------------------------------------------
 if input_dict['mode'] == 'all' or 'binned' in input_dict['mode'].lower():
+    binned_out_folder = input_dict['out_folder'] + '/' + 'Binned_input/'
+    if not os.path.isdir(binned_out_folder):
+        os.mkdir(binned_out_folder)
+    # Get the path to the gtf-fle, only allow the name of the full one and the mini example.
+    if os.path.isfile(input_dict['provided_input'] + '/' + 'gencode.v38.annotation.gtf.gz'):
+        gtf_file = input_dict['provided_input'] + '/' + 'gencode.v38.annotation.gtf.gz'
+    else:
+        if os.path.isfile(input_dict['provided_input'] + '/' + 'gencode.v38.annotation_chr21Genes.gtf'):
+            gtf_file = input_dict['provided_input'] + '/' + 'gencode.v38.annotation_chr21Genes.gtf'
+        else:
+            print("ERROR: missing the gtf-file in the provided input folder. Expected" +
+                  input_dict['provided_input'] + '/' + 'gencode.v38.annotation.gtf.gz')
+            sys.exit()
+
     start_bin = clock()
     print("Writing input files for Binned mode")
     window_size = 1000000
     bin_size = 100
-    tss_locs = TSS_Fetcher.gene_window_bed(input_dict['gtf_file'], tss_type='5', dict_only=True, gene_set=gene_set)
+    tss_locs = TSS_Fetcher.gene_window_bed(gtf_file, tss_type='5', dict_only=True, gene_set=gene_set)
     chrom_boundaries = chromsizes('hg38')
 
     def get_gene_bins(bin_gene):
         """Bin 1 MB window around a gene's 5' into bins of size 100 bp and get the signals from each bigwig file.
         Bins outside the chromosome boundaries are skipped, meaning that not all genes will have 10,000 entries."""
         locs = tss_locs[bin_gene]
-        gene_out = input_dict['out_folder'] + '/InputBinned_' + bin_gene + ".txt"
+        gene_out = binned_out_folder + bin_gene + ".txt"
         # locs["tss"] is a set with only the 5'.
         upper_end = min(list(locs["tss"])[0] + window_size // 2, chrom_boundaries[locs['chr']][1])
         lower_end = max(list(locs["tss"])[0] - window_size // 2, chrom_boundaries[locs['chr']][0])
