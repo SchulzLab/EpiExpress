@@ -3,6 +3,7 @@
   "mode": "CRE,binned",
   "out_folder": "TestOutput/",
   "gene_file": "ExampleData/GeneList.txt",
+  "model_folder": "",
   "provided_input": "ExampleData/ProvidedInput/",
   "cores": 1
 }
