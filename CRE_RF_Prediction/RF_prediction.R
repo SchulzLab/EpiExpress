@@ -10,7 +10,7 @@ config_file <- args[1]  # User-specified JSON file path
 config <- fromJSON(config_file)
 
 # Extract paths from JSON
-model_dir <- config$model_path               # Directory containing model files and min-max files
+model_dir <- config$model_folder               # Directory containing model files and min-max files
 input_dir <- config$out_folder               # Directory for input gene files (txt.gz) and output predictions
 
 # Function to scale data based on min-max values for each column
