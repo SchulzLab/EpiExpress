@@ -36,8 +36,22 @@ for entry in ['bigwigs', 'gene_file', 'mode', 'out_folder', 'provided_input']:
         print("ERROR: missing entry in JSON file for " + entry)
         sys.exit()
 
+# Get the file with the model performance per gene.
+if os.path.isfile(input_dict['provided_input'] + '/' + 'ModelPerformances.txt.gz'):
+    performance_file = input_dict['provided_input'] + '/' + 'ModelPerformances.txt.gz'
+else:
+    if os.path.isfile(input_dict['provided_input'] + '/' + 'ModelPerformances_chr21Genes.txt.gz'):
+        performance_file = input_dict['provided_input'] + '/' + 'ModelPerformances_chr21Genes.txt.gz'
+    else:
+        print("ERROR: missing the mapping file for CREs to genes in the provided input folder. Expected" +
+              input_dict['provided_input'] + '/' + 'ModelPerformances.txt.gz')
+        sys.exit()
+
 if 'cores' not in input_dict:
     input_dict['cores'] = 1
+
+if 'correlation_cutoff' not in input_dict:
+    input_dict['correlation_cutoff'] = 0
 
 if not os.path.isdir(input_dict['out_folder']):
     os.mkdir(input_dict['out_folder'])
@@ -59,6 +73,27 @@ else:  # Assume pattern matching.
                for x in os.listdir(bw_folder) if fnmatch.fnmatch(x, bw_pattern)}
 
 gene_set = set([x.strip().split('\t')[0] for x in open(input_dict['gene_file']) if not x.startswith('#')])
+
+# Check for potential performance cutoff and for failed models.
+gene_misses = {g: [] for g in gene_set}  # As list, so we can append strings per mode.
+writable_genes = {m: set() for m in ['CRE-RF', 'Binned-CNN']}
+performance_df = pd.read_table(performance_file, sep='\t', header=0, index_col='Ensembl ID')
+performance_df = performance_df[performance_df.index.isin(gene_set)]
+for gene in gene_set:
+    # If a gene is not in the performance table, it didn't pass the filtering and was not considered for training.
+    if gene not in performance_df.index:
+        gene_misses[gene].append("Not considered for training")
+    else:
+        for mode in ['CRE-RF', 'Binned-CNN']:
+            if input_dict['mode'] == 'all' or mode.lower() in input_dict['mode'].lower():
+                if performance_df.loc[gene][mode] == 0:  # A 0 means the model failed entirely.
+                    gene_misses[gene].append(mode+" model failed")
+                elif performance_df.loc[gene][mode] < input_dict['correlation_cutoff']:
+                    gene_misses[gene].append(mode+" model performance below correlation cutoff")
+                else:
+                    writable_genes[mode].add(gene)
+open(input_dict['out_folder'] + '/FailedGenes.txt', 'w').write('\n'.join([g + '\t' + ', '.join(val)
+                                                                          for g, val in gene_misses.items() if val]))
 
 # --------------------------------------------------------------------------------------------------
 # CRE-mode
@@ -85,7 +120,7 @@ if input_dict['mode'] == 'all' or 'cre' in input_dict['mode'].lower():
     with gzip.open(gene_cre_file, 'rt') as map_in:
         for row in map_in:
             gene = row.strip().split('\t')[0]
-            if gene in gene_set:
+            if gene in writable_genes['CRE-RF']:
                 gene_peaks_map[row.strip().split('\t')[0]] = row.strip().split('\t')[1].split(',')  # Fixed order.
     # Get the set of regions that are within reach of genes and get their signal in the bigwig files.
     window_regions = pybedtools.BedTool('\n'.join(['chr'+x.replace('-', '\t') for x in set(chain(*gene_peaks_map.values()))]),
@@ -107,7 +142,7 @@ if input_dict['mode'] == 'all' or 'cre' in input_dict['mode'].lower():
         subprocess.call("gzip " + window_out, shell=True)
 
     process_pool = Pool(processes=input_dict['cores'])
-    process_pool.map(write_gene, [g for g in gene_set if g in gene_peaks_map])
+    process_pool.map(write_gene, [g for g in writable_genes['CRE-RF'] if g in gene_peaks_map])
     process_pool.close()
     print('Input for CRE mode written', clock() - startcre)
 
@@ -133,7 +168,7 @@ if input_dict['mode'] == 'all' or 'binned' in input_dict['mode'].lower():
     print("Writing input files for Binned mode")
     window_size = 1000000
     bin_size = 100
-    tss_locs = TSS_Fetcher.gene_window_bed(gtf_file, tss_type='5', dict_only=True, gene_set=gene_set)
+    tss_locs = TSS_Fetcher.gene_window_bed(gtf_file, tss_type='5', dict_only=True, gene_set=writable_genes['Binned-CNN'])
     chrom_boundaries = chromsizes('hg38')
 
     def get_gene_bins(bin_gene):
@@ -162,6 +197,6 @@ if input_dict['mode'] == 'all' or 'binned' in input_dict['mode'].lower():
         subprocess.call("gzip " + gene_out, shell=True)
 
     process_pool = Pool(processes=input_dict['cores'])
-    process_pool.map(get_gene_bins, list(gene_set))
+    process_pool.map(get_gene_bins, list(writable_genes['Binned-CNN']))
     process_pool.close()
     print('Input for Binned mode written', clock() - start_bin)
