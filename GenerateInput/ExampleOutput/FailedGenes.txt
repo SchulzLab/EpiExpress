@@ -1,3 +1,0 @@
-ENSG00000279720	CRE-RF model performance below correlation cutoff, Binned-CNN model performance below correlation cutoff
-ENSG00000160294	Binned-CNN model failed
-ENSG00000279493	Not considered for training
