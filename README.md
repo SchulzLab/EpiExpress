@@ -104,7 +104,7 @@ Rscript ExpressionPredictionModels/Prediction/Prediction_CRE_RF/Prediction_CRE_R
 
 To predict the expression by Binned-CNN, run this command:
 ```bash
-python Prediction/Binned_CNN_prediction/CNN_prediction.py path/to/config.json
+python ExpressionPredictionModels/Prediction/Binned_CNN_prediction/Prediction_Binned_CNN.py path/to/config.json
 
 ```
 
