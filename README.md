@@ -98,13 +98,13 @@ git clone https://github.com/SchulzLab/ExpressionPredictionModels.git
 To predict the expression by CRE-RF, run this command:
 
 ```bash
-Rscript CRE-RF/CRE_Predict_RF.R path/to/config.json
+Rscript Prediction/Prediction_CRE_RF/CRE_Predict_RF.R path/to/config.json
 
 ```
 
 To predict the expression by Binned-CNN, run this command:
 ```bash
-python Binned_CNN_prediction/CNN_prediction.py path/to/config.json
+python Prediction/Binned_CNN_prediction/CNN_prediction.py path/to/config.json
 
 ```
 
