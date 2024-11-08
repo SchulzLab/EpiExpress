@@ -115,7 +115,7 @@ For each gene, the script will generate a CSV file with the prediction results.
 
 ## Notes
 
-- Ensure that the gene expression files and the model names match. For example, if your gene file is named `ENSG00000123456.txt.gz`, the corresponding model should be `ENSG00000123456.RDS`.
+- Ensure that the input files and the model names match. For example, if your gene file is named `ENSG00000123456.txt.gz`, the corresponding model should be `ENSG00000123456.RDS`.
 
 
 ## License
