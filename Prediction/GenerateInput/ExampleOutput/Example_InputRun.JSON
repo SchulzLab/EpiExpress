@@ -1,0 +1,10 @@
+{
+  "bigwigs": "ExampleData/bigwigs/*_chr21.bigwig",
+  "mode": "CRE-RF,Binned-CNN",
+  "out_folder": "ExampleOutput/",
+  "gene_file": "ExampleData/GeneList.txt",
+  "model_folder": "",
+  "provided_input": "ExampleData/ProvidedInput/",
+  "cores": 1,
+  "correlation_cutoff": 0.3
+}
