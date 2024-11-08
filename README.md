@@ -98,7 +98,7 @@ git clone https://github.com/SchulzLab/ExpressionPredictionModels.git
 To predict the expression by CRE-RF, run this command:
 
 ```bash
-Rscript Prediction/Prediction_CRE_RF/Prediction_CRE_RF.R path/to/config.json
+Rscript ExpressionPredictionModels/Prediction/Prediction_CRE_RF/Prediction_CRE_RF.R path/to/config.json
 
 ```
 
