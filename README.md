@@ -95,6 +95,10 @@ git clone https://github.com/SchulzLab/ExpressionPredictionModels.git
 
 ### 4. Prediction
 #### Run the script by specifying the path to your configuration JSON file:
+ Make sure that you field "out_folder" and "model_folder" correctly on the JSON file. 
+ "model_folder" should be the path to the models and min-max files that you have downloaded from Zenodo.
+ "out_folder" should be the path to your input data (the one you created in previous step). The final prediction will be stored there too.
+
 To predict the expression by CRE-RF, run this command:
 
 ```bash
