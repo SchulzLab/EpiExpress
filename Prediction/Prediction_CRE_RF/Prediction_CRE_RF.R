@@ -12,6 +12,7 @@ config <- fromJSON(config_file)
 # Extract paths from JSON
 model_dir <- config$model_folder               # Directory containing model files and min-max files
 input_dir <- config$out_folder                 # Directory for input gene files (txt.gz) 
+min_max_dir <- config$provided_input            # Directory for min-max files 
 
 # Define the path for the result subfolder
 result_dir <- file.path(input_dir, "result")
