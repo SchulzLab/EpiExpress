@@ -13,6 +13,14 @@ config <- fromJSON(config_file)
 model_dir <- config$model_folder               # Directory containing model files and min-max files
 input_dir <- config$out_folder                 # Directory for input gene files (txt.gz) and output predictions
 
+# Define the path for the result subfolder
+result_dir <- file.path(input_dir, "result")
+
+# Create the result subfolder if it doesn't already exist
+if (!dir.exists(result_dir)) {
+  dir.create(result_dir)
+}
+
 # Function to scale data based on min-max values for each column
 scale_data <- function(data, min_values, max_values) {
   scaled_data <- sweep(data, 2, min_values, FUN = "-")
@@ -25,7 +33,7 @@ load_min_max <- function(gene_name) {
   min_max_file <- file.path(model_dir, paste0(gene_name, "_min_max.txt"))
   
   # Read min-max values for each column
-  min_max_data <- read.table(min_max_file, header = TRUE, sep = "\t")  # Ensure the correct separator
+  min_max_data <- read.table(min_max_file, header = TRUE, sep = "\t")  
   # Ensure Min and Max columns are numeric
   min_values <- as.numeric(min_max_data$Min)
   max_values <- as.numeric(min_max_data$Max)
@@ -54,9 +62,9 @@ for (input_file in input_files) {
   data <- read.table(input_file, header = TRUE)
   # Convert dashes (-) in column names to periods (.)
   colnames(data) <- gsub("-", ".", colnames(data))  
-  # Store the 'Sample' column separately before removal
+  # Storing the 'Sample' column separately before removal
   sample_column <- data$Sample
-  # Remove 'Sample' column if it exists
+  # Removing 'Sample' column if it exists
   if ("Sample" %in% colnames(data)) {
     data <- data[, !colnames(data) %in% "Sample"]  # Exclude 'Sample' column
   }
@@ -65,7 +73,7 @@ for (input_file in input_files) {
   
   # Apply log transformation: log2(data + 1)
   log_transformed_data <- log2(data + 1)
-  # Scale the data
+  # data scaling
   scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
   
   # Run predictions using the loaded model
@@ -74,8 +82,8 @@ for (input_file in input_files) {
   # Add the 'Sample' column back to the predictions data frame
   final_output <- cbind(Sample = sample_column, Prediction = predictions)
   
-  # Save predictions to output_dir with the same gene name, as .csv
-  output_file <- file.path(input_dir, paste0(gene_name, "_predictions.csv"))
+ # Save predictions to the result directory with the same gene name, as .csv
+  output_file <- file.path(result_dir, paste0(gene_name, "_predictions.csv"))
   write.csv(final_output, output_file, row.names = FALSE)
   
   message(paste("Predictions saved for gene:", gene_name, "in", output_file))
