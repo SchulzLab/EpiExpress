@@ -3,6 +3,7 @@ library(jsonlite)
 library(randomForest)
 library(dplyr)
 library(utils)
+set.seed(0)
 
 print("reading the json file")
 # Load the JSON file path from command-line arguments
@@ -78,6 +79,7 @@ for (input_file in input_files) {
   scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
   
   # Run predictions using the loaded model
+  
   predictions <- predict(model, newdata = scaled_data)
   
   # Add the 'Sample' column back to the predictions data frame
