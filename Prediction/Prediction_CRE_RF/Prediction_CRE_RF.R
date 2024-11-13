@@ -15,7 +15,7 @@ input_dir <- config$out_folder                 # Directory for input gene files 
 min_max_dir <- config$provided_input            # Directory for min-max files 
 
 # Define the path for the result subfolder
-result_dir <- file.path(input_dir, "result")
+result_dir <- file.path(input_dir, "CRE_RF_result")
 
 # Create the result subfolder if it doesn't already exist
 if (!dir.exists(result_dir)) {
