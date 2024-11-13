@@ -95,7 +95,7 @@ git clone https://github.com/SchulzLab/ExpressionPredictionModels.git
 
 ### 4. Prediction
 #### Run the script by specifying the path to your configuration JSON file:
- Make sure that you filled the "out_folder" and "model_folder" correctly on the JSON file.
+ Make sure that you provided the paths to all nedded files on the JSON file:
  
  - "model_folder" should be the path to the model files that you have downloaded from Zenodo.
  - "provided_input" should contain the min-max files that you have downloaded from Zenodo.
