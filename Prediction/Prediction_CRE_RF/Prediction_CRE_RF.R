@@ -79,7 +79,7 @@ for (input_file in input_files) {
   scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
   
   # Run predictions using the loaded model
-  
+  set.seed(0)
   predictions <- predict(model, newdata = scaled_data)
   
   # Add the 'Sample' column back to the predictions data frame
