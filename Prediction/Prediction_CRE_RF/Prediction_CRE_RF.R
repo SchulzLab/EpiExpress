@@ -31,7 +31,7 @@ scale_data <- function(data, min_values, max_values) {
 
 # Load min-max values from a single file per gene
 load_min_max <- function(gene_name) {
-  min_max_file <- file.path(model_dir, paste0(gene_name, "_min_max.txt"))
+  min_max_file <- file.path(min_max_dir, paste0(gene_name, "_min_max.txt"))
   
   # Read min-max values for each column
   min_max_data <- read.table(min_max_file, header = TRUE, sep = "\t")  
