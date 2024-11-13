@@ -11,7 +11,7 @@ config_file <- args[1]  # User-specified JSON file path
 config <- fromJSON(config_file)
 # Extract paths from JSON
 model_dir <- config$model_folder               # Directory containing model files and min-max files
-input_dir <- config$out_folder                 # Directory for input gene files (txt.gz) and output predictions
+input_dir <- config$out_folder                 # Directory for input gene files (txt.gz) 
 
 # Define the path for the result subfolder
 result_dir <- file.path(input_dir, "result")
