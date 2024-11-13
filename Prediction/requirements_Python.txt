@@ -1,0 +1,6 @@
+multiprocess==0.70.11.1
+numpy==1.21.6
+pybedtools==0.10.0
+pyBigWig==0.3.17
+pandas==1.5.2
+

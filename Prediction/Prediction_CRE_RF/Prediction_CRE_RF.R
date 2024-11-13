@@ -3,7 +3,6 @@ library(jsonlite)
 library(randomForest)
 library(dplyr)
 library(utils)
-set.seed(0)
 
 print("reading the json file")
 # Load the JSON file path from command-line arguments
@@ -12,11 +11,11 @@ config_file <- args[1]  # User-specified JSON file path
 config <- fromJSON(config_file)
 # Extract paths from JSON
 model_dir <- config$model_folder               # Directory containing model files and min-max files
-input_dir <- config$out_folder                 # Directory for input gene files (txt.gz) 
-min_max_dir <- config$provided_input            # Directory for min-max files 
+input_dir <- file.path(config$out_folder, "CRE_input") # Directory for input gene files (txt.gz) 
+min_max_dir <- file.path(config$provided_input, "MinMax_CRE_RF")  # Directory for min-max files 
 
 # Define the path for the result subfolder
-result_dir <- file.path(input_dir, "CRE_RF_result")
+result_dir <- file.path(config$out_folder, "CRE_RF_result")
 
 # Create the result subfolder if it doesn't already exist
 if (!dir.exists(result_dir)) {
@@ -32,7 +31,7 @@ scale_data <- function(data, min_values, max_values) {
 
 # Load min-max values from a single file per gene
 load_min_max <- function(gene_name) {
-  min_max_file <- file.path(min_max_dir, paste0(gene_name, "_min_max.txt"))
+  min_max_file <- file.path(min_max_dir, paste0(gene_name, "_min_max.txt.gz"))
   
   # Read min-max values for each column
   min_max_data <- read.table(min_max_file, header = TRUE, sep = "\t")  
@@ -79,7 +78,6 @@ for (input_file in input_files) {
   scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
   
   # Run predictions using the loaded model
-  set.seed(0)
   predictions <- predict(model, newdata = scaled_data)
   
   # Add the 'Sample' column back to the predictions data frame
