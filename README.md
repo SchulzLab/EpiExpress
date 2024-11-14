@@ -46,22 +46,27 @@ The Binned-CNN models are built using Keras in python for ~ 28,000 genes, and th
 
 ### 1. Download Pre-Trained Models from Zenodo
 
-Before running the predictions, you need to download the pre-trained models from Zenodo. The models for each methods are provided as a tar file containing ~ 28,000 models, one for each gene.
+Before running the predictions, you need to download the pre-trained models from Zenodo. The models for each method are provided as a tar file containing ~ 28,000 models, one for each gene.
 
 **Steps:**
 - Go to the [Zenodo record](https://zenodo.org/uploads/13992024).
-  - If you would like to use CRE-RF method, download CRE_RF_models.tar and RF_min_max.tar files.
-  - If you would like to use Binned-CNN method, download CNN_best_models.tar.gz and CNN_min_max.tar files.
+  - If you would like to use the CRE-RF models, download CRE_RF_models.tar.
+  - If you would like to use the Binned-CNN method, download CNN_best_models.tar.gz.
 - Uncompress the files into one directory on your local machine.
-- you will have to add this path in the JSON file in the next steps.
+- You will have to add this path in the JSON file in the next steps.
 
+### 2. Clone the repository 
 
-### 2. Generate Input Data
+```bash
+git clone https://github.com/SchulzLab/ExpressionPredictionModels.git
+```
+
+### 3. Generate Input Data
 
 To get gene expression predictions on your own data, you do not only need to download the pre-trained models (step above), but also generate the input matrices in the right format. For that, you will need:
-- BigWig-files of H3K27ac ChIP-seq in hg38 for each sample that contain the fold-change over the control.
+- BigWig-files for each sample with H3K27ac ChIP-seq in hg38 that contain the fold-change over the control.
 - To download the folder with the other required data we provide on Zenodo (TODO LINK).
-- Prepare a JSON file with the paths and options as explained below. You can find an [example JSON file here](https://github.com/SchulzLab/ExpressionPredictionModels/blob/main/GenerateInput/Example_InputRun.JSON).
+- Prepare a JSON file with the paths and options as explained below. You can find an [example JSON file here](https://github.com/SchulzLab/ExpressionPredictionModels/blob/main/Prediction/Example_Run.JSON).
 
 | Parameter            | Description                                                                                                                                                                                                                                                                                                                                                                           |
 |----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -74,54 +79,39 @@ To get gene expression predictions on your own data, you do not only need to dow
 | `cores`              | Number of cores to use for steps that are parallelized (Default 1).                                                                                                                                                                                                                                                                                                                   |
  | `correlation_cutoff` | Only models with a Pearson correlation coefficient between predicted and test data above the cutoff will be used (Default 0).                                                                                                                                                                                                                                                        |
 
-We provide scripts to generate the input files for the models in the right format, both for the CRE- and the Binned-feature setup. Both setups are based on a matrix of samples*genomic regions filled with the H3K27ac ChiP-seq signal. The CRE setup uses the ENCODE CREs within a 1 MB window around a gene's 5'TSS as genomic regions. The Binned setup splits the 1 MB window into consecutive bins of size 100 bp. To test the input generation and see the output files' format, have a look at the [GenerateInput folder](https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/GenerateInput).
-There, we provide the scripts and a miniature examples of the files. Inside the folder you can call:
-
-```
-python3 BigWigToInput.py Example_InputRun.JSON
-```
-
-The script BigWigToInput.py writes the output based on the information given by Example_InputRun.JSON, or your own JSON-file. The output produced 
-by this example run is also stored in [ExampleOutput](https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/GenerateInput/ExampleOutput).
-Once the input matrices are generated, you can proceed with the next step and get the models' expression prediction. If the input matrix for a gene for a feature setup was not written, it is listed in the file _FailedGenes.txt_ with a note saying why.
-
-### 3. Clone the repository 
+We provide scripts to generate the input files for the models in the right format, both for the CRE- and the Binned-feature setup. 
+Both setups are based on a matrix of samples*genomic regions filled with the H3K27ac ChiP-seq signal. The CRE setup uses the 
+ENCODE CREs within a 1 MB window around a gene's 5'TSS as genomic regions. The Binned setup splits the 1 MB window 
+into consecutive bins of size 100 bp. To test the input generation and the subsequent expression prediction, 
+you can follow the commands explained here, which will use a small example data set. The entire output of this example
+run can also be found in the [ExampleOutput folder](https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/Prediction/ExampleOutput).
+For your own data, exchange the example JSON file with your own. If you cloned the directory, move into the Prediction/ folder. Inside the folder you can call:
 
 ```bash
-
-git clone https://github.com/SchulzLab/ExpressionPredictionModels.git
-
+python3 GenerateInput/BigWigToInput.py Example_Run.JSON
 ```
+
+The script BigWigToInput.py writes the output based on the information given by Example_Run.JSON, or your own JSON-file.
+Once the input matrices are generated, you can proceed with the next step and get the models' expression prediction. 
+If the input matrix for a gene for a feature setup was not written, it is listed in the file _FailedGenes.txt_ with a note saying why.
+
 
 ### 4. Prediction
 #### Run the script by specifying the path to your configuration JSON file:
- Make sure that you provided the paths to all nedded files on the JSON file:
- 
- - "model_folder" should be the path to the model files that you have downloaded from Zenodo.
- - "provided_input" should contain the min-max files that you have downloaded from Zenodo.
- - "out_folder" should be the path to your input data (the one you created in previous step). The final prediction files for CRE-RF will be stored in a subfolder named "CRE_RF_result".
-
+This step uses the same JSON file as the input generation.
 To predict the expression by CRE-RF, run this command:
 
 ```bash
-Rscript ExpressionPredictionModels/Prediction/Prediction_CRE_RF/Prediction_CRE_RF.R path/to/config.json
-
+Rscript Prediction_CRE_RF/Prediction_CRE_RF.R Example_Run.JSON
 ```
 
-To predict the expression by Binned-CNN, run this command:
+This will generate a sub-folder CRE_RF_result inside the out_folder you declared in the JSON file. For each gene, 
+one csv-file will be written with a predicted expression value for each sample found in the bigwigs folder.
+
+In the same manner, you can get the predictions from the Binned-CNN:
 ```bash
-python ExpressionPredictionModels/Prediction/Binned_CNN_prediction/Prediction_Binned_CNN.py path/to/config.json
-
+python3 Prediction_Binned_CNN/Prediction_Binned_CNN.py Example_Run.JSON
 ```
-
-
-### Output
-
-For each gene, the script will generate a CSV file with the prediction results. 
-
-## Notes
-
-- Ensure that the input files and the model names match. For example, if your gene file is named `ENSG00000123456.txt.gz`, the corresponding model should be `ENSG00000123456.RDS`.
 
 
 ## License
