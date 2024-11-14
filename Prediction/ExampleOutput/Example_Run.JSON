@@ -1,7 +1,7 @@
 {
   "bigwigs": "GenerateInput/ExampleData/bigwigs/*_chr21.bigwig",
   "mode": "CRE-RF,Binned-CNN",
-  "out_folder": "GenerateInput/ExampleOutput/",
+  "out_folder": "ExampleOutput/",
   "gene_file": "GenerateInput/ExampleData/GeneList.txt",
   "model_folder": "GenerateInput/ExampleData/Models/",
   "provided_input": "GenerateInput/ExampleData/Provided_Input/",

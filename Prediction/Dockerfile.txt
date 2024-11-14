@@ -1,0 +1,22 @@
+FROM ubuntu:22.04
+
+RUN apt-get update
+RUN apt-get -y install python3.9 python3-pip python3-setuptools python3-dev
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get -y install r-base
+
+RUN pip3 install --upgrade pip
+
+COPY requirements_Python.txt ./
+
+RUN pip3 install -r requirements_Python.txt
+
+
+RUN R -e "install.packages('dplyr', version='1.14', versiondependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('jsonlite', version='1.8.8', versiondependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('utils', version='4.3.2', versiondependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('randomForest', version='4.7.1.1', versiondependencies=TRUE, repos='http://cran.rstudio.com/')"
+
+
+COPY . .
