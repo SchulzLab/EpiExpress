@@ -7,9 +7,10 @@ This folder contains all the scripts and analyses developed during this project,
 
 ### 1. Training  
 Contains scripts used to train different methods for predicting gene expression from H3K27ac data:
-CRE based methods: Random Forest (RF) and Multi Layer Perceptron (MLP).
-Binned based methods: Convolutional Neural Network (CNN)and Random Forest (RF).
-Stitchit method: A linear regression 
+
+- CRE based methods: Random Forest (RF) and Multi Layer Perceptron (MLP).
+- Binned based methods: Convolutional Neural Network (CNN)and Random Forest (RF).
+- Stitchit method: A linear regression 
 
 #### Key Scripts:  
 - `CRE_RF.R`: Code for training RF models for 28,000 genes using CRE regions from ENCODE.  
