@@ -15,7 +15,7 @@ This repository provides two main folders:
  trained CNN (Binned-CNN) models. The models are stored on Zenodo, and users can download, unzip, and use them for prediction on their own data.
 
 ## Table of Contents
-  - [Overview](#Gene Expression Prediction with Pre-Trained Models)
+  - [Gene Expression Prediction with Pre-Trained Models](#Gene Expression Prediction with Pre-Trained Models)
   - [Requirements](#requirements)
   - [Usage](#usage)
     - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
