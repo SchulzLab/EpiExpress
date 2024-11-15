@@ -1,5 +1,6 @@
 
-# Gene Expression Prediction with Pre-Trained Models
+# Gene Expression Prediction and Manuscript Code
+
 
 This repository provides two main folders:
 
