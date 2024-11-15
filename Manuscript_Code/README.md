@@ -18,7 +18,7 @@ Contains scripts used to train different methods for predicting gene expression 
 - `CRE_NN2.R`: Code for training two hidden layers MLP models for 28,000 genes  using CRE regions from ENCODE.
 - `Binned_CNN.py`: Code for training CNN models for 28,000 genes using binned genomic regions.  
 - `Binned_RF.py`: Code for training RF models for 28,000 genes using binned genomic regions.
-- STITCHIT.R : Code for training stitchit models for 28,000 genes using segmentedc regions (is it ok?).
+- `STITCHIT.R` : Code for training stitchit models for 28,000 genes using segmentedc regions (is it ok?).
 
 ---
 
@@ -26,7 +26,7 @@ Contains scripts used to train different methods for predicting gene expression 
 Includes scripts for generating all visualizations presented in the manuscript, such as model performance comparisons, validation results, and gene characteristics.  
 
 #### Key Scripts:  
-- `Dotplot_Overlap_DisgenetGenes_and_SignificantGenes.R`: Generates plots showing the overlap between DisGeNET's leukemia genes and the significant genes identified in our analysis.
+- `Dotplot_Overlap_DisgenetGenes_and_SignificantGenes.R`: Generates plots showing the overlap between DisGeNET's leukemia genes and the significant genes identified by our models in the analysis.
 - `Scatterplots_logfoldChange_RF_CNN_significantGenes.R`: Generates two scatterplots: one showing the correlation of fold change between leukemia genes and significant genes identified by CRE-RF, and another showing the correlation of fold change for Binned-CNN
 
 ---
