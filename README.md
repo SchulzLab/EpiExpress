@@ -14,7 +14,7 @@ This repository provides two main folders:
 
 
 
-## Table of Contents
+## Table of Contents for Prediction section
   - [Gene Expression Prediction with Pre-Trained Models](#Gene-Expression-Prediction-with-Pre-Trained-Models)
   - [Requirements](#requirements)
   - [Usage](#usage)
