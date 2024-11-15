@@ -35,8 +35,8 @@ Includes scripts for generating all visualizations presented in the manuscript, 
 Scripts for performing in silico perturbation (ISP) analyses, which measure the influence of individual features on gene expression predictions by setting features to zero and observing the resulting changes.  
 
 #### Key Scripts:  
-- `ISP_CRE_RF_Crispri.R`: Calculates ISP scores using Random Forest models.  
-- `ISP_Binned_CNN_Crispri.py`: Calculates ISP scores using CNN models.  
+- `ISP_CRE_RF_Crispri.R`: Calculates ISP scores using CRE-RF models.  
+- `ISP_Binned_CNN_Crispri.py`: Calculates ISP scores using Binned-CNN models.  
  
 
 ---
