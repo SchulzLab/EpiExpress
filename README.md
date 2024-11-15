@@ -7,13 +7,15 @@ This repository provides two main folders:
 
 2. **`manuscript_code`**: Contains the code and analysis we performed during the development of the project and the manuscript. This includes training models, generating plots, and conducting the analysis presented in the paper. The code in this folder was used for internal purposes, such as in silico perturbation (ISP), figure generation, and model training.
 
-For users interested in running predictions with pre-trained models, please focus on the **`Prediction`** folder. For those looking for the code related to model development and the analysis presented in the manuscript, refer to the **`manuscript_code`** folder, which has subfolders like `ISP`, `Plots`, and `Training` that organize our project scripts.
+ For users interested in running predictions with pre-trained models, please focus on the **`Prediction`** folder. For those looking for the code related to model development and the 
+ analysis presented in the manuscript, refer to the **`manuscript_code`** folder, which has subfolders like `ISP`, `Plots`, and `Training` that organize our project scripts.
 
 
-This repository provides an R script to predict gene expression levels using pre-trained Random Forest (CRE-RF) models and Python script to predict gene expression levels using pre-trained CNN (Binned-CNN) models. The models are stored on Zenodo, and users can download, unzip, and use them for prediction on their own data.
+ This repository provides an R script to predict gene expression levels using pre-trained Random Forest (CRE-RF) models and Python script to predict gene expression levels using pre- 
+ trained CNN (Binned-CNN) models. The models are stored on Zenodo, and users can download, unzip, and use them for prediction on their own data.
 
 ## Table of Contents
-  - [Overview](#overview)
+  - [Overview](#Gene Expression Prediction with Pre-Trained Models)
   - [Requirements](#requirements)
   - [Usage](#usage)
     - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
@@ -26,7 +28,7 @@ This repository provides an R script to predict gene expression levels using pre
 
 
 
-## Overview
+## Gene Expression Prediction with Pre-Trained Models
 
 This repository allows users to:
 - Download pre-trained models from Zenodo.
