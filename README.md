@@ -14,7 +14,7 @@ This repository provides two main folders:
 
 
 ## Table of Contents
-  - [Gene Expression Prediction with Pre-Trained Models](#Gene Expression Prediction with Pre-Trained Models)
+  - [Gene Expression Prediction with Pre-Trained Models](#Gene-Expression-Prediction-with-Pre-Trained-Models)
   - [Requirements](#requirements)
   - [Usage](#usage)
     - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
