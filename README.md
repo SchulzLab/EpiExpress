@@ -6,7 +6,7 @@ This repository provides two main folders:
 
 1. **`Prediction`**: Contains the code for users to predict gene expression levels using pre-trained Random Forest (CRE-RF) models and Python scripts for Binned-CNN models. Detailed instructions for how users can predict gene expression with their own data are provided below.
 
-2. **`manuscript_code`**: Contains the code and analysis we performed during the development of the project and the manuscript. This includes training models, generating plots, and conducting the analysis presented in the paper. The code in this folder was used for internal purposes, such as in silico perturbation (ISP), figure generation, and model training.
+2. **`manuscript_code`**: Contains the code and analysis we performed during the development of the project and the manuscript. This includes training models, generating plots, and conducting the analysis presented in the paper. The code in this folder was used for internal purposes, such as in silico perturbation (ISP), figure generation, and model training. There is also a README file which explins all sections in detail.
 
  For users interested in running predictions with pre-trained models, please focus on the **`Prediction`** folder. For those looking for the code related to model development and the 
  analysis presented in the manuscript, refer to the **`manuscript_code`** folder that organize our project scripts.
