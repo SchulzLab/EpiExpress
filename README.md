@@ -9,7 +9,7 @@ This repository provides two main folders:
 2. **`manuscript_code`**: Contains the code and analysis we performed during the development of the project and the manuscript. This includes training models, generating plots, and conducting the analysis presented in the paper. The code in this folder was used for internal purposes, such as in silico perturbation (ISP), figure generation, and model training. There is also a README file which explins all sections in detail.
 
 For those looking for the code related to model development and the analysis presented in the manuscript, refer to the **`manuscript_code`** folder that organize our project scripts.
-For users interested in running predictions with pre-trained models, please focus on the **`Prediction`** folder and here is the detail explanation for running:
+For users interested in running predictions with pre-trained models, please focus on the **`Prediction`** folder and here is the detail explanation for using:
 
 
 
