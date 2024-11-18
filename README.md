@@ -66,7 +66,7 @@ As alternative to conda or manual installation, you can download our Docker imag
 docker image pull dennisheck/epiexpress
 ```
 When starting the container, you will want to mount your local directory in which the downloaded models and your other data is located. Otherwise, the container doesn't have access to your local file system and changes made within the container won't be reflected in your file system (that's the not-so-convenient part mentioned before). 
-```bash
+```
 docker run -itd --mount type=bind,source=<absolute local path>,target=</folder name for inside the container> --name epiexpress dennisheck/epiexpress bash
 ```
 If this successfully created the container, you can start an interactive bash window in it with:
@@ -74,7 +74,7 @@ If this successfully created the container, you can start an interactive bash wi
 docker start -ai epiexpress
 ```
 To exit the container again, call:
-```bash
+```
 exit
 ```
 Please note that when working with the Docker container, all provided paths must match the paths in the container, not those in your local file system. For example, if you have a file _/User/birds/pelican_run.JSON_ and you ran the docker run command with _--mount type=bind,source=/Users/birds/,target=/container_birds_, then the file is found in the container under _container_birds/pelican_run.JSON_. 
