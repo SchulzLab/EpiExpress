@@ -11,7 +11,8 @@ import gzip
 import re
 from timeit import default_timer as clock
 import subprocess
-from multiprocessing import Pool
+#from multiprocessing import Pool
+import multiprocessing
 import argparse
 import shutil
 import json
@@ -25,6 +26,7 @@ Please refer to the README at https://github.com/SchulzLab/ExpressionPredictionM
 # --------------------------------------------------------------------------------------------------
 # Process input arguments
 # --------------------------------------------------------------------------------------------------
+multiprocessing.set_start_method('fork')  # Multiprocess otherwise can cause issues on MacOS.
 parser = argparse.ArgumentParser()
 parser.add_argument('json_file', help='Path to the JSON file with the run specifications.')
 args = parser.parse_args()
@@ -141,7 +143,7 @@ if input_dict['mode'] == 'all' or 'cre' in input_dict['mode'].lower():
                     window.write('\t'.join([f'{round(peaks_counts_dict[peak][s_idx], 5):g}' for peak in these_peaks]) + '\n')
         subprocess.call("gzip " + window_out, shell=True)
 
-    process_pool = Pool(processes=input_dict['cores'])
+    process_pool = multiprocessing.Pool(processes=input_dict['cores'])
     process_pool.map(write_gene, [g for g in writable_genes['CRE-RF'] if g in gene_peaks_map])
     process_pool.close()
     print('Input for CRE mode written', clock() - startcre)
@@ -196,7 +198,8 @@ if input_dict['mode'] == 'all' or 'binned' in input_dict['mode'].lower():
 
         subprocess.call("gzip " + gene_out, shell=True)
 
-    process_pool = Pool(processes=input_dict['cores'])
+    process_pool = multiprocessing.Pool(processes=input_dict['cores'])
     process_pool.map(get_gene_bins, list(writable_genes['Binned-CNN']))
     process_pool.close()
     print('Input for Binned mode written', clock() - start_bin)
+
