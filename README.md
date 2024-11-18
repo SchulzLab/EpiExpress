@@ -128,6 +128,8 @@ In the same manner, you can get the predictions from the Binned-CNN:
 python3 Prediction_Binned_CNN/Prediction_Binned_CNN.py Example_Run.JSON
 ```
 
+## Issues
+
 If you face issues with running any of the steps, please open an issue here on GitHub and we can work on a solution.
 
 ## License
