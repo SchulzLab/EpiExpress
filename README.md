@@ -6,51 +6,27 @@ This repository provides two main folders:
 
 1. **`Prediction`**: Contains the code for users to predict gene expression levels using pre-trained Random Forest (CRE-RF) models and Python scripts for Binned-CNN models. Detailed instructions for how users can predict gene expression with their own data are provided below.
 
-2. **`manuscript_code`**: Contains the code and analysis we performed during the development of the project and the manuscript. This includes training models, generating plots, and conducting the analysis presented in the paper. The code in this folder was used for internal purposes, such as in silico perturbation (ISP), figure generation, and model training. There is also a README file which explins all sections in detail.
+2. **`manuscript_code`**: Contains the code and analysis we performed during the development of the project and the manuscript. This includes training models, generating plots, and conducting the analysis presented in the paper. Please see the README file in the folder to get a description of the files. Please note, the scripts are meant as documentation and less as ready-to-use software. 
 
-For those looking for the code related to model development and the analysis presented in the manuscript, refer to the **`manuscript_code`** folder that organize our project scripts.
-For users interested in running predictions with pre-trained models, please focus on the **`Prediction`** folder and here is the detail explanation for using:
-
-
-
-## Table of Contents for Prediction section
-  - [Gene Expression Prediction with Pre-Trained Models](#Gene-Expression-Prediction-with-Pre-Trained-Models)
-  - [Requirements](#requirements)
+## Prediction: Table of Contents
+  - [Gene Expression Prediction with Pre-Trained Models](#gene-expression-prediction-with-pre-trained-models)
   - [Usage](#usage)
     - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
-    - [2. Prepare Input Data](#2-prepare-input-data)
-    - [3. Clone the repository](#3-Clone-the-repository)
-    - [4. Prediction](#4-prediction)
-  - [Notes](#notes)
+    - [2. Software and packages](#2-software-and-packages)
+    - [3. Generate Input Data](#3-generate-input-data)
+    - [4. Expression Prediction](#4-expression-prediction)
   - [License](#license)
-
-
 
 
 ## Gene Expression Prediction with Pre-Trained Models
 
-This repository allows users to:
+This repository allows to:
 - Download pre-trained models from Zenodo.
-- Build your own input data for prediction.
+- Build input matrices from our own data.
 - Predict gene expression using the pre-trained models.
-- Generating the results (predicted expression).
 
-The CRE-RF models are built using Random Forest (RF) in R for ~ 28,000 genes, and the predictions are based on a user's dataset containing the same features.
-
-The Binned-CNN models are built using Keras in python for ~ 28,000 genes, and the predictions are based on a user's dataset containing the same feature setup (need to be checked).
-
-## Requirements 
-#### CRE-RF Requirements
- - R version 4.0 or higher
- - R libraries: `randomForest`, `dplyr`, `utils`, `jsonlite`
-
- Install these libraries in R if you don’t have them already:
-
- ```r
- install.packages(c("randomForest", "dplyr", "utils", "jsonlite"))
- ```
-#### Binned-CNN Requirements
-- (need to be added)
+We provide two types of models: CRE-RF and Binned-CNN. They differ in the feature setup and — as the names suggests — in the type of model used for training. The CRE setup (used for CRE-RF) uses the ENCODE CREs within a 1 MB window around a gene's 5'TSS as features. The Binned setup (for Binned-CNN) splits the 1 MB window 
+into consecutive bins of size 100 bp. Both types of approaches produced models for ~28,000 genes each. 
 
 ## Usage
 
@@ -63,19 +39,51 @@ Before running the predictions, you need to download the pre-trained models from
   - If you would like to use the CRE-RF models, download CRE_RF_models.tar.
   - If you would like to use the Binned-CNN method, download CNN_best_models.tar.gz.
 - Uncompress the files into one directory on your local machine.
-- You will have to add this path in the JSON file in the next steps.
 
-### 2. Clone the repository 
+### 2. Software and packages
 
+There are three ways to get the required packages:
+1. Create a **conda environment** with the YAML-file we provide. In theory, it should give you all the correct versions (if conda is in your favour), but system dependencies can cause issues.
+2. **Manually** install the packages [listed here under dependencies](https://github.com/SchulzLab/EpiExpress/blob/main/Prediction/condaenv.yml).
+3. Pull our **Docker** image and work within a Docker container. Docker promises complete reproducibility of the software, but requires the installation of Docker and is less convenient when it comes to setting paths.
+
+#### Conda environment
+If you decided to try the installation with conda, clone the repository and set your working directory to Prediction/.
 ```bash
 git clone https://github.com/SchulzLab/ExpressionPredictionModels.git
 ```
+To create the environment run the following:
+```bash
+conda env create -f condaenv.yml
+conda activate epiexpress
+```
+If you have [mamba](https://mamba.readthedocs.io/en/latest/) installed (same as conda but way faster), replace _conda_ with _mamba_.
+When this was successful, you can move to point 3. Generate Input Data.
+
+#### Docker container
+As alternative to conda or manual installation, you can download our Docker image, create a container from it and work within that container. It requires a running installation of Docker. To pull the image, run:
+```bash
+docker image pull dennisheck/epiexpress
+```
+When starting the container, you will want to mount your local directory in which the downloaded models and your other data is located. Otherwise, the container doesn't have access to your local file system and changes made within the container won't be reflected in your file system (that's the not-so-convenient part mentioned before). 
+```bash
+docker run -itd --mount type=bind,source=<absolute local path>,target=</folder name for inside the container> --name epiexpress dennisheck/epiexpress bash
+```
+If this successfully created the container, you can start an interactive bash window in it with:
+```bash
+docker start -ai epiexpress
+```
+To exit the container again, call:
+```bash
+exit
+```
+Please note that when working with the Docker container, all provided paths must match the paths in the container, not those in your local file system. For example, if you have a file _/User/birds/pelican_run.JSON_ and you ran the docker run command with _--mount type=bind,source=/Users/birds/,target=/container_birds_, then the file is found in the container under _container_birds/pelican_run.JSON_. 
 
 ### 3. Generate Input Data
 
 To get gene expression predictions on your own data, you do not only need to download the pre-trained models (step above), but also generate the input matrices in the right format. For that, you will need:
 - BigWig-files for each sample with H3K27ac ChIP-seq in hg38 that contain the fold-change over the control.
-- To download the folder with the other required data we provide on Zenodo (TODO LINK).
+- To download the folder Provided_Input/ with the other required data we provide on [Zenodo](https://zenodo.org/uploads/13992024).
 - Prepare a JSON file with the paths and options as explained below. You can find an [example JSON file here](https://github.com/SchulzLab/ExpressionPredictionModels/blob/main/Prediction/Example_Run.JSON).
 
 | Parameter            | Description                                                                                                                                                                                                                                                                                                                                                                           |
@@ -90,9 +98,7 @@ To get gene expression predictions on your own data, you do not only need to dow
  | `correlation_cutoff` | Only models with a Pearson correlation coefficient between predicted and test data above the cutoff will be used (Default 0).                                                                                                                                                                                                                                                        |
 
 We provide scripts to generate the input files for the models in the right format, both for the CRE- and the Binned-feature setup. 
-Both setups are based on a matrix of samples*genomic regions filled with the H3K27ac ChiP-seq signal. The CRE setup uses the 
-ENCODE CREs within a 1 MB window around a gene's 5'TSS as genomic regions. The Binned setup splits the 1 MB window 
-into consecutive bins of size 100 bp. To test the input generation and the subsequent expression prediction, 
+Both setups are based on a matrix of samples*genomic regions filled with the H3K27ac ChiP-seq signal. To test the input generation and the subsequent expression prediction, 
 you can follow the commands explained here, which will use a small example data set. The entire output of this example
 run can also be found in the [ExampleOutput folder](https://github.com/SchulzLab/ExpressionPredictionModels/tree/main/Prediction/ExampleOutput).
 For your own data, exchange the example JSON file with your own. If you cloned the directory, move into the Prediction/ folder. Inside the folder you can call:
@@ -106,16 +112,15 @@ Once the input matrices are generated, you can proceed with the next step and ge
 If the input matrix for a gene for a feature setup was not written, it is listed in the file _FailedGenes.txt_ with a note saying why.
 
 
-### 4. Prediction
-#### Run the script by specifying the path to your configuration JSON file:
-This step uses the same JSON file as the input generation.
+### 4. Expression Prediction
+This step uses the same JSON file as the previous input generation step.
 To predict the expression by CRE-RF, run this command:
 
 ```bash
 Rscript Prediction_CRE_RF/Prediction_CRE_RF.R Example_Run.JSON
 ```
 
-This will generate a sub-folder CRE_RF_result inside the out_folder you declared in the JSON file. For each gene, 
+This will generate a sub-folder CRE_RF_result/ inside the out_folder you declared in the JSON file. For each gene, 
 one csv-file will be written with a predicted expression value for each sample found in the bigwigs folder.
 
 In the same manner, you can get the predictions from the Binned-CNN:
@@ -123,6 +128,7 @@ In the same manner, you can get the predictions from the Binned-CNN:
 python3 Prediction_Binned_CNN/Prediction_Binned_CNN.py Example_Run.JSON
 ```
 
+If you face issues with running any of the steps, please open an issue here on GitHub and we can work on a solution.
 
 ## License
 
