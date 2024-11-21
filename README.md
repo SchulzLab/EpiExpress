@@ -57,6 +57,11 @@ To create the environment run the following:
 conda env create -f condaenv.yml
 conda activate epiexpress
 ```
+Depending on the system, the creation command might fail. In this case, you might want to try:
+```bash
+conda env create --platform osx-64 -f condaenv.yml
+```
+
 If you have [mamba](https://mamba.readthedocs.io/en/latest/) installed (same as conda but way faster), replace _conda_ with _mamba_.
 When this was successful, you can move to point 3. Generate Input Data.
 
