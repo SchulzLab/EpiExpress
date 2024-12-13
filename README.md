@@ -1,7 +1,7 @@
 
 # Epiexpress (Gene Expression Prediction)
 
-1. **`Prediction`**: Contains the code for users to predict gene expression levels using pre-trained Random Forest (CRE-RF) models and Python scripts for Binned-CNN models. Detailed instructions for how users can predict gene expression with their own data are provided below.
+Epiexpress is a pipeline for users to predict gene expression levels using pre-trained Random Forest (CRE-RF) models and Python scripts for Binned-CNN models. Detailed instructions for how users can predict gene expression with their own data are provided below. All codes and scripts are in Prediction folder.
 
 ## Prediction: Table of Contents
   - [Gene Expression Prediction with Pre-Trained Models](#gene-expression-prediction-with-pre-trained-models)
