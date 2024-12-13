@@ -23,9 +23,23 @@ if (!dir.exists(result_dir)) {
 }
 
 # Function to scale data based on min-max values for each column
+#scale_data <- function(data, min_values, max_values) {
+#  scaled_data <- sweep(data, 2, min_values, FUN = "-")
+#  scaled_data <- sweep(scaled_data, 2, max_values - min_values, FUN = "/")
+# return(scaled_data)
+#}
+
 scale_data <- function(data, min_values, max_values) {
-  scaled_data <- sweep(data, 2, min_values, FUN = "-")
-  scaled_data <- sweep(scaled_data, 2, max_values - min_values, FUN = "/")
+  scaled_data <- data
+  for (i in seq_along(min_values)) {
+    scaled_data[, i] <- scaled_data[, i] - min_values[i]
+    range_value <- max_values[i] - min_values[i]
+    if (range_value != 0) {
+      scaled_data[, i] <- scaled_data[, i] / range_value
+    } else {
+      scaled_data[, i] <- 0
+    }
+  }
   return(scaled_data)
 }
 
