@@ -3,7 +3,7 @@
 
 Epiexpress is a pipeline for users to predict gene expression levels using pre-trained Random Forest (CRE-RF) models and Python scripts for Binned-CNN models. Detailed instructions for how users can predict gene expression with their own data are provided below. All codes and scripts are in Prediction folder.
 
-## Prediction: Table of Contents
+## Table of Contents
   - [Gene Expression Prediction with Pre-Trained Models](#gene-expression-prediction-with-pre-trained-models)
   - [Usage](#usage)
     - [1. Download Pre-Trained Models from Zenodo](#1-download-pre-trained-models-from-zenodo)
