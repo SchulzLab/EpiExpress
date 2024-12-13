@@ -132,7 +132,7 @@ python3 Prediction_Binned_CNN/Prediction_Binned_CNN.py Example_Run.JSON
 
 If you face issues with running any of the steps, please open an issue here on GitHub and we can work on a solution.
 
-## manuscript codes
+## Manuscript codes
 
 This repository also contains another folder named "manuscript_code" which Contains the code and analysis we performed during the development of the project and the manuscript. This includes training models, generating plots, and conducting the analysis presented in the paper. Please see the README file in the folder to get a description of the files. Please note, the scripts are meant as documentation and less as ready-to-use software. 
 
