@@ -11,11 +11,6 @@ library(tensorflow)
 library(keras)
 set.seed(123)
 
-
-
-#V2 to 5601 on Bohr and tmux is: MLP2
-
-
 file_path <- "/projects/apog/work/CNN_bin/miscellaneous/kept_genes.txt"
 
 # Read the file, skipping the first row (header)
