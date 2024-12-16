@@ -9,16 +9,30 @@ library(snow)
 library(reticulate)
 library(tensorflow)
 library(keras)
-set.seed(200)
-tensorflow::tf$random$set_seed(200)
-
-acc_nested_list = list()
-pr_nested_list = list()
-acc_nested_list2 = list()
+set.seed(123)
 
 
-file_path = ("path/to/gene/list/gene_list.txt")
-file_contents <- readLines(file_path)
+
+#V2 to 5601 on Bohr and tmux is: MLP2
+
+
+file_path <- "/projects/apog/work/CNN_bin/miscellaneous/kept_genes.txt"
+
+# Read the file, skipping the first row (header)
+file_contents <- read.table(
+  file_path,
+  header = FALSE,       # Since the header is irregular, treat the file as headerless
+  skip = 1,             # Skip the first line
+  col.names = c("Index", "Gene"), # Define column names manually
+  stringsAsFactors = FALSE # Keep strings as characters
+)$Gene
+
+print(length(file_contents))
+
+# Generate reproducible seeds
+set.seed(123)
+seeds <- sample(1:10000, 30)
+print(seeds)
 
 df = NULL
 acc_nested_list = list()
@@ -26,25 +40,25 @@ acc_nested_list = list()
 validation_split = 0.3
 
 for(p in file_contents) { 
-  set.seed(200)
+  
   tryCatch({
     
     gene_name <- p
     
-    if(file.exists(paste0("path/to/input/files/", gene_name, ".txt.gz"))){
+    start_time <- Sys.time() # Record start time
+    
+    if(file.exists(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"))){
       print("TRUE")
-      df = read.table(paste0("path/to/input/files/", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
+      df = read.table(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
     } else{
       print("NOTTRUE")
-
     }
     
-    mainlist1 = list()
+    
+    
     print(gene_name)
-    cl <-makeCluster(50)
-    clusterEvalQ(cl, { #keep reproducibility
-      tensorflow::tf$random$set_seed(200)
-    })
+    cl <- makeCluster(52)
+    
     
     df <- df[order(df$Sample),] #ordering the sample names
     rownames(df) = NULL
@@ -54,8 +68,8 @@ for(p in file_contents) {
     df2 = log2(df2 + 1) #whole data after log2, 
     df3 = cbind(df_samples, df2)
     
-    test_samples <- "path/to/test/samples/partition0_test.csv"
-    train_samples <- "path/to/train/samples/partition0_train.csv"
+    test_samples <- "/projects/apog/work/CNN_bin/miscellaneous/partition0_test.csv"
+    train_samples <- "/projects/apog/work/CNN_bin/miscellaneous/partition0_train.csv"
     
     test_sample2 <- read.csv(test_samples)
     test_sample3 <- test_sample2[,1]
@@ -127,169 +141,133 @@ for(p in file_contents) {
     dropouts = c(0.2, 0.4)
     batchsizes = 32 
     Epochs= 1200
-    learning_rates=c(0.001, 0.01)
+    # learning_rates=c(0.001, 0.01)
     layers = c(1,2)
     dropouts2 = c(0.2, 0.4)
     
+
     best_loss = Inf
     best_loss2 = Inf
     
     
     #------------------------------------------------------
     
-    # else{
-    print(" two hidden layers mode")
-    # for (m in 1: length(batchsizes)) {
-    for (j in 1: length(dropouts)) {
-      for (jj in 1: length(dropouts2)) {
+    # Main loop with parallelism for seeds
+    print("Two hidden layers mode")
+    for (j in 1:length(dropouts)) {
+      for (jj in 1:length(dropouts2)) {
+        # Export variables to parallel cluster
+        clusterExport(cl = cl, list = c("dropouts", "dropouts2", "seeds", "j", "jj", "training", "training_target"))
+        # print("Before second parLapply")
         
-        clusterExport(cl=cl, list=c("dropouts","learning_rates", "dropouts2", "j","jj","training", "training_target"))
-        print("before second parLapply")
-        a2 <-  parLapply(cl, 1:length(learning_rates),
-                         fun2 <- function(f){require(keras)
-                           tensorflow::tf$random$set_seed(200) #to controll randomness
-                           
-                           model <- keras_model_sequential()
-                           model %>%
-                             layer_dense(100, activation = "relu"
-                                         # , kernel_regularizer = regularizer_l1_l2(l1 = 0.01, l2 = 0.01)
-                                         ,input_shape = c(dim(training)[2])
-                             ) %>%
-                             
-                             layer_dropout(rate = dropouts[j]) %>%
-                             layer_dense(50, activation = "relu"
-                                         # , kernel_regularizer = regularizer_l1_l2(l1 = 0.01, l2 = 0.01)
-                             ) %>%
-                             
-                             layer_dropout(rate = dropouts2[jj]) %>%
-                             
-                             layer_dense(units=1, activation ="linear")
-                           
-                           
-                           #####c) Compiling the DNN model
-                           model %>% compile(
-                             loss = 'mse',
-                             optimizer = optimizer_adam(learning_rates[f]),
-                             metrics = c('mse'))
-                           model
-                           # }
-                           print_dot_callback <- callback_lambda(
-                             on_epoch_end = function(epoch, logs) {
-                               if (epoch %% 100 == 0) cat("\n")
-                               cat(".")})
-                           
-                           early_stop <- callback_early_stopping(monitor = "val_loss", mode='min',patience =30)
-                           # model<-build_model()
-                           # model %>% summary()
-                           
-                           
-                           ###########d) Fitting the DNN model#################
-                           
-                           model1<-model %>% fit(
-                             training,
-                             training_target,
-                             epochs = 1200,
-                             batch_size = 32,
-                             shuffled=F,
-                             validation_split = 0.3,
-                             verbose=0,
-                             callbacks = list(early_stop, print_dot_callback)
-                           )
-                           
-                           
-                           temp_loss = mean(model1$metrics$val_loss)
-                           
-                           
-                           return(list(model=model1, loss = temp_loss
-                                       #  ,o_dropouts = dropouts[j],
-                                       # o_batchsizes = batchsizes[m], o_learning_rates = learning_rates[k],
-                           ))
-                         })
-        
-        
-        for(w in 1:length(a2)){
+        # Parallel processing over seeds
+        a2 <- parLapply(cl, seeds, function(seed) {
+          require(keras)
+          tensorflow::tf$random$set_seed(seed) # Set the seed for TensorFlow randomness
           
-          if(a2[[w]]$loss < best_loss2) {
-            best_loss2 = a2[[w]]$loss
-            
-            b_hyper_dropouts = dropouts[j]
-            # b_hyper_batchsizes = batchsizes[m]
-            b_hyper_learning_rates = learning_rates[w]
-            b_hyper_dropouts2 = dropouts2[jj]
-            best_model2 = a2[[w]]$model
-            
+          # Build the model
+          model <- keras_model_sequential() %>%
+            layer_dense(100, activation = "relu", input_shape = c(dim(training)[2])) %>%
+            layer_dropout(rate = dropouts[j]) %>%
+            layer_dense(50, activation = "relu") %>%
+            layer_dropout(rate = dropouts2[jj]) %>%
+            layer_dense(units = 1, activation = "linear")
+          
+          # Compile the model
+          model %>% compile(
+            loss = 'mse',
+            optimizer = optimizer_adam(),
+            metrics = c('mse')
+          )
+          
+          # Callbacks
+          print_dot_callback <- callback_lambda(
+            on_epoch_end = function(epoch, logs) {
+              if (epoch %% 100 == 0) cat("\n")
+              cat(".")
+            })
+          early_stop <- callback_early_stopping(monitor = "val_loss", mode = 'min', patience = 30)
+          
+          # Fit the model
+          model1 <- model %>% fit(
+            training,
+            training_target,
+            epochs = 1200,
+            batch_size = 32,
+            shuffled = FALSE,
+            validation_split = 0.3,
+            verbose = 0,
+            callbacks = list(early_stop, print_dot_callback)
+          )
+          
+          # Calculate the loss
+          temp_loss <- mean(model1$metrics$val_loss)
+          
+          return(list(
+            model = model1,
+            loss = temp_loss,
+            seed = seed # Include seed in the result
+          ))
+        })
+        
+        # Evaluate and save the best model
+        for (w in 1:length(a2)) {
+          if (a2[[w]]$loss < best_loss2) {
+            best_loss2 <- a2[[w]]$loss
+            b_hyper_dropouts <- dropouts[j]
+            b_hyper_dropouts2 <- dropouts2[jj]
+            best_seed <- a2[[w]]$seed
+            best_model2 <- a2[[w]]$model
           }
-          
         }
-        
-        
-        
-        
-        
-        
-        # }#f
-        # }#i2
-        # }#k2
-      }#jj
-    }#j2
-    # }#m2
-    #second loss
+      } # End of dropouts2 loop
+    } # End of dropouts loop
     
-    
-    
-    # }
-    
-    # }#b
-    
+
     
     validation_err = best_loss2
-    #Best model with best paramethers
-    Best_model<-keras_model_sequential()
+    
+    #train again again
+    tensorflow::tf$random$set_seed(best_seed)
+    Best_model <- keras_model_sequential()
     Best_model %>%
-      layer_dense(100, activation = "relu", 
-                  # kernel_regularizer = regularizer_l1_l2(l1 = 0.01, l2 = 0.01), 
-                  input_shape = c(dim(training)[2])
-      ) %>%
+      layer_dense(100, activation = "relu", input_shape = c(dim(training)[2])) %>%
       layer_dropout(rate = b_hyper_dropouts) %>%
-      layer_dense(50, activation = "relu",  
-                  # kernel_regularizer = regularizer_l1_l2(l1 = 0.01, l2 = 0.01)
-      ) %>%
+      layer_dense(50, activation = "relu") %>%
       layer_dropout(rate = b_hyper_dropouts2) %>%
-      
       layer_dense(units=1, activation ="linear")
     
-    
-    #####c) Compiling the DNN model
     Best_model %>% compile(
       loss = 'mse',
-      optimizer = optimizer_adam(b_hyper_learning_rates),
+      optimizer = optimizer_adam(), #default
       metrics = c('mse'))
-    Best_model
-    # }
-    print("---------------------------------------")
-    Best_model %>% summary()
-    print("---------------------------------------")
     
-    ###########d) Fitting the DNN model#################
-    Best_ModelFited<-Best_model %>% fit(
+    # Define callbacks (NEW)
+    early_stop <- callback_early_stopping(monitor = "val_loss", mode = 'min', patience = 30)
+    print_dot_callback <- callback_lambda(
+      on_epoch_end = function(epoch, logs) {
+        if (epoch %% 100 == 0) cat("\n")
+        cat(".")
+      })
+    
+    
+    Best_ModelFited <- Best_model %>% fit(
       training, 
       training_target,
       epochs = 1200, 
       batch_size = 32,
-      shuffled=F,
+      shuffled = F,
       validation_split = 0.3,
-      verbose=0,
-      # callbacks = list(early_stop, print_dot_callback)
+      verbose = 0,
+      callbacks = list(early_stop, print_dot_callback) # Include callbacks (new)
     )
-    Best_ModelFited
-    Best_ModelFited%>% summary()
-    print("---------------------------------------")
     
-    # }
+
     
-    name1 = paste0("path/to/ottput/file/for/saving/best/model/",gene_name,".hdf5")
+    # Save best model
+    name1 = paste0("/projects/apog/work/models/1MB/new_MLP_seed/NN2/models/", gene_name, ".hdf5")
     save_model_hdf5(Best_model, name1)
-    print("the best model is saved")
+    print("Best model is saved")
     
     min_origin_target =  min(train_traget_just_log_no_norm)
     max_origin_target = max(train_traget_just_log_no_norm)
@@ -317,6 +295,8 @@ for(p in file_contents) {
     MSE_backscaled_train = mean((scaled_original_target_train - scaled_predicted_target_train)^2)
     
     
+    end_time <- Sys.time() # Record end time
+    runtime <- as.numeric(difftime(end_time, start_time, units = "secs"))
     
     
     accuracy1 = data.frame(
@@ -327,33 +307,19 @@ for(p in file_contents) {
       MSE_train_NN2 = MSE_train,
       Cor_train_NN2 = Cor_train,
       MSE_S_train_NN2 = MSE_backscaled_train,
-      val_error = validation_err 
+      val_error = validation_err,
+      runtime_secs = runtime # Include runtime in seconds
     )
-    print("I saved the stat in a dataframe")
-
+    # print("I saved the stat in a dataframe")
+    
     acc_nested_list[[p]] <- (accuracy1)
-
+    
     #saving the statistics
-    saveRDS(acc_nested_list, "path/to/output/for/saving/statistics/NN2_statistics.RDS") #local
-
+    saveRDS(acc_nested_list, "/projects/apog/work/models/1MB/new_MLP_seed/NN2/stat/NN2_seed_statistics_V2.RDS") #local
     
     
-    
-    # }
-  },  error=function(e){
-    print(paste("Error occurred at gene", p)); message(e)
-    
-    
-  }
-  
-  
-  )
-  
+    print(gene_name)
+  }, error = function(e) {cat("ERROR:", conditionMessage(e), "\n")})
   
   stopCluster(cl) 
-}#p
-
-
-
-print("done")
-
+}
