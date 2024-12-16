@@ -89,7 +89,7 @@ for gene in gene_set:
         for mode in ['CRE-RF', 'Binned-CNN']:
             if input_dict['mode'] == 'all' or mode.lower() in input_dict['mode'].lower():
                 if performance_df.loc[gene][mode] == 0:  # A 0 means the model failed entirely.
-                    gene_misses[gene].append(mode+" model failed")
+                    gene_misses[gene].append(mode+" model training failed")
                 elif performance_df.loc[gene][mode] < input_dict['correlation_cutoff']:
                     gene_misses[gene].append(mode+" model performance below correlation cutoff")
                 else:
