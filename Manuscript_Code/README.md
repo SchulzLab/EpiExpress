@@ -49,11 +49,10 @@ Includes scripts for generating visualizations presented in the manuscript, such
 Includes scripts for the Histone-Acetylome-Wide Association Studies in the manuscript.
 
 #### Key Scripts:  
-- `Leukemia_diff_expression_IHEC_data.R`: 
-- `T_Test_on_ISP_to_find_sig_regions.R`: 
-- `FDR_on_all_regions.R`: 
-- `Finding_DNA_sed_for_sig_regions.R`: 
-
+- `Leukemia_diff_expression_IHEC_data.R`: Performs Deseq2 analysis to find significant Leukemia genes.
+- `T_Test_on_ISP_to_find_sig_regions.R`: Performing T-test on all regions from significant genes.
+- `FDR_on_all_regions.R`: Performs FDR test on the regions and filter them based on adjusted p-value.
+- `Finding_DNA_sed_for_sig_regions.R`: Finds DNA sequence of significant regions (DNA seq is input of PASTAA tool).
 
 
 ## Purpose  
