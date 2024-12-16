@@ -45,6 +45,16 @@ Includes scripts for generating visualizations presented in the manuscript, such
 - `eQTL_Plots.py`: Plots the recall of recovering eQTL-gene interactions among the top 100,000 interactions of each model.
 
 ---
+### 4. Application 
+Includes scripts for the Histone-Acetylome-Wide Association Studies in the manuscript.
+
+#### Key Scripts:  
+- `Leukemia_diff_expression_IHEC_data.R`: 
+- `T_Test_on_ISP_to_find_sig_regions.R`: 
+- `FDR_on_all_regions.R`: 
+- `Finding_DNA_sed_for_sig_regions.R`: 
+
+
 
 ## Purpose  
 These scripts were developed as part of the research process and were used internally to:  
