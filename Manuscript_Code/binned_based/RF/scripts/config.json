@@ -1,0 +1,6 @@
+{
+	"input_file": "../../data/ENSG00000271335_w1MB_100bs_BinnedActivity.txt.gz",
+	"test_file": "../../data/test_cells.txt",
+	"seed_value": "0",
+	"output_file": "../RF_output/ENSG00000271335_RF_0"
+}

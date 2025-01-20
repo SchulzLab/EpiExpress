@@ -1,0 +1,10 @@
+{
+	"input_folder": "../ISP_data/binned_input/",
+	"test_file": "../../data/test_cells.txt",
+	"model_folder": "../ISP_data/CNN_models/",
+	"application_folder": "../ISP_data/leukmia_input/",
+	"samples_file": "../ISP_data/samples_leukemia_adult_removed_outliers.txt",
+	"bed_folder": "../ISP_data/fused_active_regions_merged/",
+	"output_folder": "../ISP_output/",
+	"gene_name": "ENSG00000000460"
+}
