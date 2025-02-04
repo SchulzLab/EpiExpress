@@ -29,7 +29,7 @@ Scripts for performing in silico perturbation (ISP) analyses, which measure the 
 
 #### Key Scripts:  
 - `ISP_CRE_RF_Crispri.R`: Calculates ISP scores using CRE-RF models.  
-- `ISP_Binned_CNN_Crispri.py`: Calculates ISP scores using Binned-CNN models.
+- `ISP_eQTL_CNN_fusedFeatures.py`: Calculates ISP scores using Binned-CNN models.
 - `CRISPRi_Intersection.py` with `CRISPRi_Helpers.py`: Collect the ISP for the K562 sample from the different models and intersects the features with experimentally validated CRISPRi-interactions.
 - `eQTL_Recall.py` with `eQTL_Helpers.py`: Collect the ISP score across tissue-mapped samples for all models and calculate the recall among the 100,000 highest scored interactions with GSEA.
  
