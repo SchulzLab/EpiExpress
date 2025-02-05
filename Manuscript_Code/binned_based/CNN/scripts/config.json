@@ -1,8 +1,0 @@
-{
-	"input_file": "../../data/ENSG00000226608_w1MB_100bs_BinnedActivity.txt.gz",
-	"test_file": "../../data/test_cells.txt",
-	"model_type": "expanding",
-	"seed_file": "../models_trained_on_pooled/expanding_pooled_batch1.h5",
-	"seed_value": "0",
-	"output_file": "../CNN_output/ENSG00000226608_expanding_0"
-}
