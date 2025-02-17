@@ -94,14 +94,22 @@ for (input_file in input_files) {
   # Run predictions using the loaded model
   predictions <- predict(model, newdata = scaled_data)
   
-  # Add the 'Sample' column back to the predictions data frame
-  final_output <- cbind(Sample = sample_column, Prediction = predictions)
+  #back scale to the original space:
+  back_scaled_predictions <- (predictions * (min_max$max - min_max$min)) + min_max$min
+
+  # Reverse log transformation
+  original_predictions <- 2^back_scaled_predictions - 1
+
+  # Create final output with both columns
+  final_output <- data.frame(Sample = sample_column, 
+                           Prediction = predictions, 
+                           Original_space_Prediction = original_predictions)
+
+   # Save predictions to the result directory with the same gene name, as .csv
+    output_file <- file.path(result_dir, paste0(gene_name, "_predictions.csv"))
+    write.csv(final_output, output_file, row.names = FALSE)
   
- # Save predictions to the result directory with the same gene name, as .csv
-  output_file <- file.path(result_dir, paste0(gene_name, "_predictions.csv"))
-  write.csv(final_output, output_file, row.names = FALSE)
-  
-  message(paste("Predictions saved for gene:", gene_name, "in", output_file))
+   message(paste("Predictions saved for gene:", gene_name, "in", output_file))
 }
 
 message("Prediction process completed.")
