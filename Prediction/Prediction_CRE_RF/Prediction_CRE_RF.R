@@ -95,7 +95,10 @@ for (input_file in input_files) {
   predictions <- predict(model, newdata = scaled_data)
   
   #back scale to the original space:
-  back_scaled_predictions <- (predictions * (min_max$max - min_max$min)) + min_max$min
+ # back_scaled_predictions <- (predictions * (min_max$max - min_max$min)) + min_max$min
+   min_exp = min_max_data$Min[nrow(min_max_data)]
+   max_exp = min_max_data$Max[nrow(min_max_data)]
+   back_scaled_predictions <- (predictions * (max_ex - min_ex)) + min_ex
 
   # Reverse log transformation
   original_predictions <- 2^back_scaled_predictions - 1
