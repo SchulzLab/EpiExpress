@@ -96,9 +96,9 @@ for (input_file in input_files) {
   
   #back scale to the original space:
  # back_scaled_predictions <- (predictions * (min_max$max - min_max$min)) + min_max$min
-   min_exp = min_max_data$Min[nrow(min_max_data)]
-   max_exp = min_max_data$Max[nrow(min_max_data)]
-   back_scaled_predictions <- (predictions * (max_ex - min_ex)) + min_ex
+   min_exp <- min_max_data$Min[min_max_data$Feature == "Expression"]
+   max_exp <- min_max_data$Max[min_max_data$Feature == "Expression"]
+   back_scaled_predictions <- (predictions * (max_exp - min_exp)) + min_exp
 
   # Reverse log transformation
   original_predictions <- 2^back_scaled_predictions - 1
