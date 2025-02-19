@@ -125,7 +125,7 @@ one csv-file will be written with a predicted expression value for each sample f
 
 In the same manner, you can get the predictions from the Binned-CNN:
 ```bash
-python3 Prediction_Binned_CNN/Prediction_Binned_CNN.py Example_Run.JSON
+python3 Prediction_Binned_CNN/prediction_binned_CNN.py Example_Run.JSON
 ```
 
 ## Issues
