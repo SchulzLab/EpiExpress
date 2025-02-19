@@ -89,7 +89,8 @@ for (input_file in input_files) {
   # Apply log transformation: log2(data + 1)
   log_transformed_data <- log2(data + 1)
   # data scaling
-  scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
+  #scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
+  scaled_data <- scale_data(log_transformed_data, min_max$min[1:length(min)-1], min_max$max[1:length(max)-1]) #remove last element which is expr
   
   # Run predictions using the loaded model
   predictions <- predict(model, newdata = scaled_data)
