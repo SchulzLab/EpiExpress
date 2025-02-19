@@ -50,8 +50,8 @@ load_min_max <- function(gene_name) {
   # Read min-max values for each column
   min_max_data <- read.table(min_max_file, header = TRUE, sep = "\t")  
   # Ensure Min and Max columns are numeric
-  min_values <- as.numeric(min_max_data$Min)
-  max_values <- as.numeric(min_max_data$Max)
+  min_values <- as.numeric(min_max_data$Min)[-1]
+  max_values <- as.numeric(min_max_data$Max)[-1]
   # Handle non-numeric columns 
   if (any(is.na(min_values)) | any(is.na(max_values))) {
     stop("Error: Min or Max columns contain non-numeric values or NAs.")
