@@ -88,7 +88,7 @@ for (input_file in input_files) {
   }
   
   min_max <- load_min_max(gene_name)
-  min_max_data <- min_max$data  # Extract the full min-max data frame
+  min_max_data <- as.data.frame(min_max$data)  # Extract the full min-max data frame
   
   # Apply log transformation: log2(data + 1)
   log_transformed_data <- log2(data + 1)
