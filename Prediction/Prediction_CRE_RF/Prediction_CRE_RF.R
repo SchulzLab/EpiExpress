@@ -23,13 +23,13 @@ if (!dir.exists(result_dir)) {
 }
 
 # Function to scale data based on min-max values for each column
-#scale_data <- function(data, min_values, max_values) {
+#min_max_normalization <- function(data, min_values, max_values) {
 #  scaled_data <- sweep(data, 2, min_values, FUN = "-")
 #  scaled_data <- sweep(scaled_data, 2, max_values - min_values, FUN = "/")
 # return(scaled_data)
 #}
 
-scale_data <- function(data, min_values, max_values) {
+min_max_normalization <- function(data, min_values, max_values) {
   scaled_data <- data
   for (i in seq_along(min_values)) {
     scaled_data[, i] <- scaled_data[, i] - min_values[i]
@@ -93,8 +93,8 @@ for (input_file in input_files) {
   # Apply log transformation: log2(data + 1)
   log_transformed_data <- log2(data + 1)
   # data scaling
-  #scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
-  scaled_data <- scale_data(log_transformed_data, min_max$min[1:length(min)-1], min_max$max[1:length(max)-1]) #remove last element which is expr
+  #scaled_data <- min_max_normalization(log_transformed_data, min_max$min, min_max$max)
+  scaled_data <- min_max_normalization(log_transformed_data, min_max$min[1:length(min)-1], min_max$max[1:length(max)-1]) #remove last element which is expr
   
   # Run predictions using the loaded model
   predictions <- predict(model, newdata = scaled_data)
