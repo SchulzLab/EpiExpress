@@ -22,25 +22,21 @@ if (!dir.exists(result_dir)) {
   dir.create(result_dir)
 }
 
-# Function to scale data based on min-max values for each column
-#scale_data <- function(data, min_values, max_values) {
-#  scaled_data <- sweep(data, 2, min_values, FUN = "-")
-#  scaled_data <- sweep(scaled_data, 2, max_values - min_values, FUN = "/")
-# return(scaled_data)
-#}
+min_max_normalize_test <- function(data, min_values, max_values) {
+  normalized_data <- data.frame(
+    lapply(names(data), function(col) {
+      min_val <- min_values[col]
+      max_val <- max_values[col]
 
-scale_data <- function(data, min_values, max_values) {
-  scaled_data <- data
-  for (i in seq_along(min_values)) {
-    scaled_data[, i] <- scaled_data[, i] - min_values[i]
-    range_value <- max_values[i] - min_values[i]
-    if (range_value != 0) {
-      scaled_data[, i] <- scaled_data[, i] / range_value
-    } else {
-      scaled_data[, i] <- 0
-    }
-  }
-  return(scaled_data)
+      if (max_val == min_val) {
+        rep(0, length(data[[col]]))
+      } else {
+        (data[[col]] - min_val) / (max_val - min_val)
+      }
+    })
+  )
+  colnames(normalized_data) <- colnames(data)
+  return(normalized_data)
 }
 
 # Load min-max values from a single file per gene
@@ -85,17 +81,32 @@ for (input_file in input_files) {
   }
   
   min_max <- load_min_max(gene_name)
-  
+  min_max_data <- as.data.frame(min_max$data)  # Extract the full min-max data frame
+  train_min_values <- setNames(min_max_data$Min, min_max_data$Feature)
+  train_max_values <- setNames(min_max_data$Max, min_max_data$Feature)
+
   # Apply log transformation: log2(data + 1)
   log_transformed_data <- log2(data + 1)
-  # data scaling
-  scaled_data <- scale_data(log_transformed_data, min_max$min, min_max$max)
-  
+
+  colnames(log_transformed_data) <- gsub("X","", colnames(log_transformed_data))
+  # min-max normalization
+  scaled_data <- min_max_normalize_test(data = log_transformed_data, min_values = train_min_values, max_values = train_max_values) #remove last element which is expr
+
+  colnames(scaled_data) <- paste0("X", colnames(scaled_data))
   # Run predictions using the loaded model
   predictions <- predict(model, newdata = scaled_data)
+
+  min_exp <- as.numeric((min_max_data$Min[min_max_data$Feature == "Expression"]))
+  max_exp <- as.numeric((min_max_data$Max[min_max_data$Feature == "Expression"]))
+  back_scaled_predictions <- (predictions * (max_exp - min_exp)) + min_exp
   
-  # Add the 'Sample' column back to the predictions data frame
-  final_output <- cbind(Sample = sample_column, Prediction = predictions)
+  # Reverse log transformation
+  original_predictions <- 2^back_scaled_predictions - 1
+  
+  # Create final output with both columns
+  final_output <- data.frame(Sample = sample_column, 
+                             Prediction = predictions, 
+                             Original_space_Prediction = original_predictions)
   
   # Save predictions to the result directory with the same gene name, as .csv
   output_file <- file.path(result_dir, paste0(gene_name, "_predictions.csv"))
