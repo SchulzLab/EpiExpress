@@ -44,7 +44,7 @@ load_min_max <- function(gene_name) {
   min_max_file <- file.path(min_max_dir, paste0(gene_name, "_min_max.txt.gz"))
   
   # Read min-max values for each column
-  min_max_data <- read.table(min_max_file, header = TRUE, sep = "\t")  
+  min_max_data <- read.table(gzfile(min_max_file, header = TRUE, sep = "\t"))  
   # Ensure Min and Max columns are numeric
   min_values <- as.numeric(min_max_data$Min)
   max_values <- as.numeric(min_max_data$Max)
