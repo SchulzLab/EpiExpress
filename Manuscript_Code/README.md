@@ -36,7 +36,7 @@ Scripts for performing in silico perturbation (ISP) analyses, which measure the 
 ---
 
 ### 3. Plots  
-Includes scripts for generating visualizations presented in the manuscript, such as model performance comparisons, validation results, and gene characteristics.  
+Includes scripts for generating visualizations presented in the manuscript, such as model performance comparisons, validation results, number of CREs, and gene characteristics.  
 
 #### Key Scripts:  
 - `Dotplot_Overlap_DisgenetGenes_and_SignificantGenes.R`: Generates plots showing the overlap between DisGeNET's leukemia genes and the significant genes identified by our models in the analysis.
