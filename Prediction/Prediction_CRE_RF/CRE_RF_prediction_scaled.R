@@ -52,7 +52,8 @@ load_min_max <- function(gene_name) {
   if (any(is.na(min_values)) | any(is.na(max_values))) {
     stop("Error: Min or Max columns contain non-numeric values or NAs.")
   }
-  return(list(min = min_values, max = max_values))
+  #return(list(min = min_values, max = max_values))
+  return(list(min = min_values, max = max_values, data = min_max_data))  # Include full data
 }
 
 # Loop through all gene input files in input_dir with .txt.gz extension
