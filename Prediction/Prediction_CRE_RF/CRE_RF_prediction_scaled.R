@@ -27,7 +27,8 @@ min_max_normalize_test <- function(data, min_values, max_values) {
     lapply(names(data), function(col) {
       min_val <- min_values[col]
       max_val <- max_values[col]
-
+      print(min_val)
+      print(max_val)
       if (max_val == min_val) {
         rep(0, length(data[[col]]))
       } else {
