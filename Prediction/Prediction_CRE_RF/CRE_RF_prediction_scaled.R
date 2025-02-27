@@ -25,6 +25,9 @@ if (!dir.exists(result_dir)) {
 min_max_normalize_test <- function(data, min_values, max_values) {
   normalized_data <- data.frame(
     lapply(names(data), function(col) {
+    if (!(col %in% names(min_values)) || !(col %in% names(max_values))) {
+      stop(paste("Error: Column", col, "not found in min-max values"))
+     }
       min_val <- min_values[col]
       max_val <- max_values[col]
       print(min_val)
