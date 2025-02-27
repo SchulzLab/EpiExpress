@@ -64,8 +64,15 @@ input_files <- list.files(input_dir, pattern = "\\.txt\\.gz$", full.names = TRUE
 
 for (input_file in input_files) {
   # Extract gene name from file name
-  gene_name <- sub("\\.txt\\.gz$", "", basename(input_file))
-  
+  #gene_name <- sub("\\.txt\\.gz$", "", basename(input_file)) covers just numeric
+  colnames(log_transformed_data) <- sapply(colnames(log_transformed_data), function(col) {
+  if (grepl("^X[0-9]", col)) {
+    sub("^X", "", col)  # Remove "X" only if it was added to a numeric column
+  } else {
+    col  # Keep as is if it starts with "Y" or already has "X"
+  }
+})
+
   # Load model for the gene
   model_file <- file.path(model_dir, paste0(gene_name, ".RDS"))
   if (!file.exists(model_file)) {
