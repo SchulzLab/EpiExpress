@@ -66,7 +66,7 @@ eqtl_beds = {t: {} for t in gtex_tissues}
 tissue_genes = {t: set() for t in gtex_tissues}  # To know the genes with eQTL in a tissue.
 
 # Get a mapping of the minimum number of eQTL hits for each sample and eQTL type from a previous run.
-minimum_hits_file = '/projects/apog/work/IHEC/ValidateInteractions/eQTLs_DFs/eQTLs_MinimumOverlap.txt'
+minimum_hits_file = '*/eQTLs_MinimumOverlap.txt'
 minimum_hits = pd.read_table(minimum_hits_file, sep='\t', header=0, index_col=0).to_dict()
 
 for tissue in gtex_tissues:
