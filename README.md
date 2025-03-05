@@ -11,7 +11,7 @@ EpiExpress is a pipeline for users to predict gene expression levels using pre-t
     - [2. Software and packages](#2-software-and-packages)
     - [3. Generate Input Data](#3-generate-input-data)
     - [4. Expression Prediction](#4-expression-prediction)
-  - [Reproduce manuscript input matrices](#reproduce-manuscript-input-matrices)
+  - [Reproduce Manuscript Input Matrices](#reproduce-manuscript-input-matrices)
   - [License](#license)
 
 ## Manuscript code
@@ -97,8 +97,8 @@ To get gene expression predictions on your own data, you do not only need to dow
 | `mode`                    | Which output files to produce. Either 'all' or 'CRE-RF,Binned-CNN' to get both feature types, 'CRE-RF' for only CRE-based or 'Binned-CNN' for only Binned.                                                                                                                                                                                                                            |
 | `out_folder`              | Output folder to which the files will be written to. A subfolder will be created for each mode.                                                                                                                                                                                                                                                                                       |
 | `gene_file`               | A file with Ensembl IDs (one per line) for which the output will be generated.                                                                                                                                                                                                                                                                                                        |
-| `CRE_RF_model_folder`     | Path to where the trained CRE-RF models were downloaded in the step above.                                                                                                                                                                                                                                                                                                            |
-| `Binned_CNN_model_folder` | Path to where the trained Binned-CNN models were downloaded in the step above.                                                                                                                                                                                                                                                                                                        |
+| `cre_rf_model_folder`     | Path to where the trained CRE-RF models were downloaded in the step above.                                                                                                                                                                                                                                                                                                            |
+| `binned_cnn_model_folder` | Path to where the trained Binned-CNN models were downloaded in the step above.                                                                                                                                                                                                                                                                                                        |
 | `provided_input`          | Path to the folder 'ProvidedInput' that holds additional files necessary for generating the input. It is available on Zenodo (TODO LINK). Please do not change the file names, otherwise the scripts will crash.                                                                                                                                                                      |
 | `cores`                   | Number of cores to use for steps that are parallelized (Default 1).                                                                                                                                                                                                                                                                                                                   |
   | `correlation_cutoff`      | Only models with a Pearson correlation coefficient between predicted and test data above the cutoff will be used (Default 0).                                                                                                                                                                                                                                                         |
@@ -134,12 +134,12 @@ In the same manner, you can get the predictions from the Binned-CNN:
 python3 Prediction_Binned_CNN/prediction_binned_CNN.py Example_Run.JSON
 ```
 
-## Reproduce manuscript input matrices
+## Reproduce Manuscript Input Matrices
 
 Due to their size, we are not able to provide all the input matrices that were used in the manuscript to train the models, meaning
 the matrices with all the training and test samples from IHEC. However, the bigwigs on which the matrices were based on are available via the 
 [EpiATLAS portal](https://ihec-epigenomes.org/epiatlas/data/) and which samples were used in the training and test is available in our [Zenodo](https://zenodo.org/uploads/13992024).
-Once you downloaded the H3K27ac ChIP-seq bigwig-files (*fc.signal.bigwig), you can follow the steps above to [generate the input matrices](https://github.com/SchulzLab/EpiExpress/tree/main#3-generate-input-data). The only thing
+Once you downloaded the H3K27ac ChIP-seq bigwig-files (*fc.signal.bigwig), you can follow the [steps above to generate the input matrices](https://github.com/SchulzLab/EpiExpress/tree/main#3-generate-input-data). The only thing
 missing then is the column with the expression, which can be taken from the file on Zenodo called genes_expected_count_DESeq2_H3K27acFormatted.tsv. It is based
 on the matrix from IHEC called genes_expected_count_DESeq2.csv, but can be directly mapped to the samples whose H3K27ac data we used.
 
