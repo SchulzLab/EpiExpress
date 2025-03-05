@@ -72,12 +72,6 @@ for (input_file in input_files) {
     next
   }
 
-  # Load model for the gene
-  model_file <- file.path(model_dir, paste0(gene_name, ".RDS"))
-  if (!file.exists(model_file)) {
-    message(paste("Model not found for gene:", gene_name))
-    next
-  }
   model <- readRDS(model_file)
   # Load input data
   data <- read.table(input_file, header = TRUE)
