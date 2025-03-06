@@ -17,8 +17,8 @@ import argparse
 import shutil
 import json
 import sys
-import TSS_Fetcher
-import BigWig_Counter
+import GenerateInput.TSS_Fetcher as TSS_Fetcher
+import GenerateInput.BigWig_Counter as BigWig_Counter
 
 """Script to write the input files (samples X region features filled with bigwig signals) for the pretrained models.
 Please refer to the README at https://github.com/SchulzLab/ExpressionPredictionModels."""
@@ -94,7 +94,7 @@ for gene in gene_set:
                     gene_misses[gene].append(mode+" model performance below correlation cutoff")
                 else:
                     writable_genes[mode].add(gene)
-open(input_dict['out_folder'] + '/FailedGenes.txt', 'w').write('\n'.join([g + '\t' + ', '.join(val)
+open(input_dict['out_folder'] + '/FailedGenes_Input.txt', 'w').write('\n'.join([g + '\t' + ', '.join(val)
                                                                           for g, val in gene_misses.items() if val]))
 
 # --------------------------------------------------------------------------------------------------

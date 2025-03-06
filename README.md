@@ -110,12 +110,12 @@ run can also be found in the [ExampleOutput folder](https://github.com/SchulzLab
 For your own data, exchange the example JSON file with your own. If you cloned the directory, move into the Prediction/ folder. Inside the folder you can call:
 
 ```bash
-python3 GenerateInput/BigWigToInput.py Example_Run.JSON
+python3 BigWigToInput.py Example_Run.JSON
 ```
 
 The script BigWigToInput.py writes the output based on the information given by Example_Run.JSON, or your own JSON-file.
 Once the input matrices are generated, you can proceed with the next step and get the models' expression prediction. 
-If the input matrix for a gene for a feature setup was not written, it is listed in the file _FailedGenes.txt_ with a note saying why.
+If the input matrix for a gene for a feature setup was not written, it is listed in the file _FailedGenes_Input.txt_ with a note saying why.
 
 
 ### 4. Expression Prediction
@@ -123,7 +123,7 @@ This step uses the same JSON file as the previous input generation step.
 To predict the expression by CRE-RF, run this command:
 
 ```bash
-Rscript Prediction_CRE_RF/Prediction_CRE_RF.R Example_Run.JSON
+Rscript Prediction_CRE_RF.R Example_Run.JSON
 ```
 
 This will generate a sub-folder CRE_RF_result/ inside the out_folder you declared in the JSON file. For each gene, 
@@ -131,7 +131,7 @@ one csv-file will be written with a predicted expression value for each sample f
 
 In the same manner, you can get the predictions from the Binned-CNN:
 ```bash
-python3 Prediction_Binned_CNN/prediction_binned_CNN.py Example_Run.JSON
+python3 Prediction_Binned_CNN.py Example_Run.JSON
 ```
 
 ## Reproduce Manuscript Input Matrices

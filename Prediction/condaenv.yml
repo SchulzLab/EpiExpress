@@ -7,10 +7,12 @@ channels:
 dependencies:
   - python==3.8.19
   - multiprocess==0.70.11.1
-  - numpy==1.21.6
+  - numpy==1.24.4
   - pybedtools==0.10.0
   - pyBigWig==0.3.17
   - pandas==1.5.2
+  - keras==2.11.0
+  - tensorflow==2.11.1
   - r-base==4.2.3
   - r-dplyr==1.1.4
   - r-jsonlite==1.8.8

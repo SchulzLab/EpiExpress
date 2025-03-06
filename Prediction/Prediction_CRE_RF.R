@@ -10,7 +10,7 @@ args <- commandArgs(trailingOnly = TRUE)
 config_file <- args[1]  # User-specified JSON file path
 config <- fromJSON(config_file)
 # Extract paths from JSON
-model_dir <- config$model_folder               # Directory containing model files and min-max files
+model_dir <- config$cre_rf_model_folder               # Directory containing model files and min-max files
 input_dir <- file.path(config$out_folder, "CRE_input") # Directory for input gene files (txt.gz) 
 min_max_dir <- file.path(config$provided_input, "MinMax_CRE_RF")  # Directory for min-max files 
 
@@ -63,15 +63,15 @@ load_min_max <- function(gene_name) {
 input_files <- list.files(input_dir, pattern = "\\.txt\\.gz$", full.names = TRUE)
 
 for (input_file in input_files) {
-  gene_name <- sub("\\.txt\\.gz$", "", basename(input_file))
-  
+  # Extract gene name from file name
+  gene_name <- sub("\\.txt\\.gz$", "", basename(input_file)) #covers just numeric
+
   # Load model for the gene
   model_file <- file.path(model_dir, paste0(gene_name, ".RDS"))
   if (!file.exists(model_file)) {
     message(paste("Model not found for gene:", gene_name))
     next
   }
-
   model <- readRDS(model_file)
   # Load input data
   data <- read.table(input_file, header = TRUE)
@@ -110,11 +110,11 @@ for (input_file in input_files) {
   # Create final output with both columns
   final_output <- data.frame(Sample = sample_column, 
                              Prediction = predictions, 
-                             Original_space_Prediction = original_predictions)
+                             Backscaled_prediction = original_predictions)
   
   # Save predictions to the result directory with the same gene name, as .csv
   output_file <- file.path(result_dir, paste0(gene_name, "_predictions.csv"))
-  write.csv(final_output, output_file, row.names = FALSE)
+  write.csv(final_output, output_file, row.names = FALSE, quote=FALSE)
   
   message(paste("Predictions saved for gene:", gene_name, "in", output_file))
 }

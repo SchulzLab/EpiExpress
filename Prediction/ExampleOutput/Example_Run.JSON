@@ -1,10 +1,11 @@
 {
-  "bigwigs": "GenerateInput/ExampleData/bigwigs/*_chr21.bigwig",
+  "bigwigs": "ExampleData/bigwigs/*_chr21.bigwig",
   "mode": "CRE-RF,Binned-CNN",
   "out_folder": "ExampleOutput/",
-  "gene_file": "GenerateInput/ExampleData/GeneList.txt",
-  "model_folder": "GenerateInput/ExampleData/Models/",
-  "provided_input": "GenerateInput/ExampleData/Provided_Input/",
+  "gene_file": "ExampleData/GeneList.txt",
+  "cre_rf_model_folder": "ExampleData/CRE_RF_Models/",
+  "binned_cnn_model_folder": "ExampleData/Binned_CNN_Models/",
+  "provided_input": "ExampleData/Provided_Input/",
   "cores": 1,
   "correlation_cutoff": 0.3
 }
