@@ -18,8 +18,9 @@ Contains scripts used to train different methods for predicting gene expression 
 - `CRE_NN2.R`: Code for training two hidden layers MLP models using CRE regions from ENCODE.
 - `Binned_CNN.py`: Code for training CNN models using binned genomic regions.  
 - `Binned_RF.py`: Code for training RF models using binned genomic regions.
-- `STITCHIT.R` : Code for training STITCHIT models using its own segmentation approach for defining features.
+- `STITCHIT.sh` : Code for training STITCHIT models using its own segmentation approach for defining features.
 
+Notes STITCHIT: The STITCHIT code can be found here [https://github.com/SchulzLab/STITCHIT/][(https://github.com/SchulzLab/STITCHIT/)]. The release version used for this manuscript is v1.0.1. 
   
 ---
 
