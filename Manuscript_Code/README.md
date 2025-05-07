@@ -20,7 +20,7 @@ Contains scripts used to train different methods for predicting gene expression 
 - `Binned_RF.py`: Code for training RF models using binned genomic regions.
 - `STITCHIT.sh` : Code for training STITCHIT models using its own segmentation approach for defining features.
 
-Notes STITCHIT: The STITCHIT code can be found here [https://github.com/SchulzLab/STITCHIT/]. The release version used for this manuscript is v1.0.1. 
+Notes STITCHIT: The STITCHIT code can be found here [STITCHIT repository](https://github.com/SchulzLab/STITCHIT/). The release version used for this manuscript is v1.0.1. 
   
 ---
 
