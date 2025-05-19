@@ -45,9 +45,9 @@ for(p in file_contents) {
     
     start_time <- Sys.time() # Record start time
     
-    if(file.exists(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"))){
+    if(file.exists(paste0("/path/to/input/file/data/", gene_name, ".txt.gz"))){
       print("TRUE")
-      df = read.table(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
+      df = read.table(paste0("/path/to/input/file/data/", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
     } else{
       print("NOTTRUE")
     }
@@ -65,8 +65,8 @@ for(p in file_contents) {
     df2 = log2(df2 + 1) #whole data after log2, 
     df3 = cbind(df_samples, df2)
     
-    test_samples <- "/projects/apog/work/CNN_bin/miscellaneous/partition0_test.csv"
-    train_samples <- "/projects/apog/work/CNN_bin/miscellaneous/partition0_train.csv"
+    test_samples <- "/path/to/the/test/partition/partition0_test.csv"
+    train_samples <- "/path/to/the/train/partition/partition0_train.csv"
     
     test_sample2 <- read.csv(test_samples)
     test_sample3 <- test_sample2[,1]
@@ -263,7 +263,7 @@ for(p in file_contents) {
     )
     
     # Save best model
-    name1 = paste0("/projects/apog/work/models/1MB/new_MLP_seed/NN1/models/",gene_name,".hdf5")
+    name1 = paste0("/path/to/save/the/models/",gene_name,".hdf5")
     save_model_hdf5(Best_model, name1)
     
     
@@ -313,7 +313,7 @@ for(p in file_contents) {
     acc_nested_list[[p]] <- (accuracy1)
     
     #saving the statistics
-    saveRDS(acc_nested_list, "/projects/apog/work/models/1MB/new_MLP_seed/NN1/stat/NN1_seed_statistics_V1.RDS") #local
+    saveRDS(acc_nested_list, "/path/to/save/the/statistics/NN1_seed_statistics_V1.RDS") #local
     
     
     print(gene_name)
