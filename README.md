@@ -35,7 +35,7 @@ into consecutive bins of size 100 bp. Both types of approaches produced models f
 Before running the predictions, you need to download the pre-trained models from Zenodo. The models for each method are provided as a tar file containing ~ 28,000 models, one for each gene.
 
 **Steps:**
-- Go to the [Zenodo record](https://zenodo.org/uploads/13992024).
+- Go to the [Zenodo record](https://doi.org/10.5281/zenodo.13992024).
   - If you would like to use the CRE-RF models, download CRE_RF_models.tar.
   - If you would like to use the Binned-CNN method, download CNN_best_models.tar.gz.
 - Uncompress the files into one directory on your local machine.
