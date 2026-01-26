@@ -73,6 +73,9 @@ else:  # Assume pattern matching.
     re_pattern = re.compile(bw_pattern.replace('*', '(.*)'))
     bigwigs = {bw_folder + '/' + x: re_pattern.search(x).group(1)
                for x in os.listdir(bw_folder) if fnmatch.fnmatch(x, bw_pattern)}
+if not bigwigs:
+    print("ERROR: no bigwig files found with the provided input: " + str(input_dict['bigwigs']))
+    sys.exit()
 
 gene_set = set([x.strip().split('\t')[0] for x in open(input_dict['gene_file']) if not x.startswith('#')])
 
