@@ -61,7 +61,7 @@ def main(args):
 
             df_res = pd.DataFrame(prediction, index=row_names, columns=['Prediction'])
             df_res['Backscaled_prediction'] = backscaled_prediction
-            output_filename = os.path.join(cnn_out, gene+'_predictions.csv')
+            output_filename = os.path.join(cnn_out, gene+'_predictions.csv.gz')
             df_res.to_csv(output_filename, sep=',', header=True, index=True, index_label='Sample')
 
         else:

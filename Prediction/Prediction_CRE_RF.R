@@ -72,6 +72,7 @@ for (input_file in input_files) {
     message(paste("Model not found for gene:", gene_name))
     next
   }
+  message(paste("Processing gene:", gene_name))
   model <- readRDS(model_file)
   # Load input data
   data <- read.table(input_file, header = TRUE)
@@ -96,7 +97,9 @@ for (input_file in input_files) {
   # min-max normalization
   scaled_data <- min_max_normalize_test(data = log_transformed_data, min_values = train_min_values, max_values = train_max_values) #remove last element which is expr
 
-  colnames(scaled_data) <- paste0("X", colnames(scaled_data))
+  if (substr(rownames(model$importance)[1], 1 , 1) != "Y") {
+    colnames(scaled_data) <- paste0("X", colnames(scaled_data))
+  }
   # Run predictions using the loaded model
   predictions <- predict(model, newdata = scaled_data)
 
@@ -113,9 +116,9 @@ for (input_file in input_files) {
                              Backscaled_prediction = original_predictions)
   
   # Save predictions to the result directory with the same gene name, as .csv
-  output_file <- file.path(result_dir, paste0(gene_name, "_predictions.csv"))
-  write.csv(final_output, output_file, row.names = FALSE, quote=FALSE)
-  
+  output_file <- file.path(result_dir, paste0(gene_name, "_predictions.csv.gz"))
+  write.csv(final_output, gzfile(output_file), row.names = FALSE, quote=FALSE)
+
   message(paste("Predictions saved for gene:", gene_name, "in", output_file))
 }
 
