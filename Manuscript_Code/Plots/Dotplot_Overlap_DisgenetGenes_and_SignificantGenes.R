@@ -12,19 +12,19 @@ library(data.table)
 library(ggplot2)
 library(readxl)
 
-df <- read_excel("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/All_Luekemia_gene_names.xlsx")
+df <- read_excel("path/to/data/All_Luekemia_gene_names.xlsx")
 df <- df[-1,]
 AML_datasets <- df[,1:2]
 colnames(AML_datasets) <- c("Disease", "Gene")
 AML_datasets <- as.data.frame(AML_datasets)
 
-CNN_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_CNN.txt")
+CNN_genes <- readLines("path/to/data/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_CNN.txt")
 length(CNN_genes)
-RF_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
+RF_genes <- readLines("path/to/data/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
 length(RF_genes)
-real_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
+real_genes <- readLines("path/to/data/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
 length(real_genes)
-all_genes <-  readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_ALL.txt")
+all_genes <-  readLines("path/to/data/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_ALL.txt")
 
 # Calculate the unique sets for CNN and RF
 common_CNN_RF <- intersect(RF_genes, CNN_genes)
