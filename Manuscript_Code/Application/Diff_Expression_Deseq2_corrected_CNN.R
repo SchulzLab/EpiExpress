@@ -9,16 +9,16 @@ library(airway)
 library(tidyverse)
 ########################################################### shared genes between kept genes, Binned-CNN and CRE-RF #############################################################################################################################
 #28180 kept genes
-kept_genes <- read.table("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/kept_genes.txt", header = FALSE, skip = 1)[, 2]
+kept_genes <- read.table("path/to/kept_genes.txt", header = FALSE, skip = 1)[, 2]
 print(length(kept_genes))
 
 #genes from RF
-health_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/health_Luekemia_scaled.RDS")
+health_Luekemia_scaled <- readRDS("/path/to/data/health_Luekemia_scaled.RDS")
 genes_from_RF <- rownames(health_Luekemia_scaled)
 print(length(genes_from_RF))
 
 #genes from CNN
-health_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/CNN/CNN_Luekemia_backscaled_healthy.RDS")
+health_Luekemia_scaled <- readRDS("/path/to/data/CNN/CNN_Luekemia_backscaled_healthy.RDS")
 genes_from_CNN <- rownames(health_Luekemia_scaled)
 print(length(genes_from_CNN))
 
@@ -36,7 +36,7 @@ new_kept_genes <- shared_genes2
 
 kept_genes <- new_kept_genes #new kept genes
 #metadata file for IHEC data
-metadata_Luekemia <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+metadata_Luekemia <- read.csv("/path/to/data/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 #picking desired colnames from the metadata:
 col = c("epirr_id_without_version", "EpiClass_pred_Sex", "EpiClass_pred_Life_stage", "harmonized_sample_disease_high", "RNA_available", "project", "harmonized_tissue_type")
 metadata_Luekemia = metadata_Luekemia[,col]
@@ -58,7 +58,7 @@ disease_df <- metadata_Luekemia[metadata_Luekemia$health_status == "Cancer",]
 disease_sample <- disease_df$samples
 
 #loading real data
-real_RNA_data <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+real_RNA_data <- read.csv("/path/to/data/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 rownames(real_RNA_data) = real_RNA_data[,1]
 real_RNA_data = real_RNA_data[,-1]
 #picking new kept genes
@@ -130,7 +130,7 @@ sig_genes_deseq_adult_df <- na.omit(sig_genes_deseq_adult_df)
 sig_genes_deseq_adult_df <- sig_genes_deseq_adult_df %>%  filter(abs(log2FoldChange)> 0.585) #based on litretures we filter logfold change
 sig_genes_deseq_adult_real <- rownames(sig_genes_deseq_adult_df)
 #saving the result:
-writeLines(sig_genes_deseq_adult_real, "/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/sig_genes_real.txt")
+writeLines(sig_genes_deseq_adult_real, "/path/to/data/New_running_after_correctin_CNN/sig_genes_real.txt")
 # MA and dispersion plots
 plotMA(res2)
 ################################################################################################################################################################################################################################################
@@ -138,13 +138,13 @@ plotMA(res2)
 ###################################################################### Deseq on RF Predicted values #########################################################################################################################################################################
 #siome preprocessing and filtering for samples has been don ein the above part (real data part)
 # preparing disease RF (picking samples and genes)
-disease_Luekemia_scaled <- readRDS("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/disease_Luekemia_scaled.RDS")
+disease_Luekemia_scaled <- readRDS("/path/to/data/disease_Luekemia_scaled.RDS")
 disease_Luekemia_scaled <- t(disease_Luekemia_scaled)
 disease_Luekemia_scaled <- disease_Luekemia_scaled [rownames(disease_Luekemia_scaled) %in% samples,]
 disease_Luekemia_scaled <- disease_Luekemia_scaled[,kept_genes]
 
 #preparing healthy RF (picking samples and genes)
-health_Luekemia_scaled <- readRDS("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/health_Luekemia_scaled.RDS")
+health_Luekemia_scaled <- readRDS("/path/to/data/health_Luekemia_scaled.RDS")
 health_Luekemia_scaled <- t(health_Luekemia_scaled)
 health_Luekemia_scaled <- health_Luekemia_scaled [rownames(health_Luekemia_scaled) %in% samples,]
 health_Luekemia_scaled <-  health_Luekemia_scaled [, kept_genes]
@@ -209,7 +209,7 @@ sig_genes_deseq_adult_df <- na.omit(sig_genes_deseq_adult_df)
 sig_genes_deseq_adult_df <- sig_genes_deseq_adult_df %>%  filter(abs(log2FoldChange)> 0.585) #based on litretures we filter it 
 
 sig_genes_deseq_adult_RF <- rownames(sig_genes_deseq_adult_df)
-writeLines(sig_genes_deseq_adult_RF, "/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/sig_genes_RF.txt")
+writeLines(sig_genes_deseq_adult_RF, "/path/to/data/New_running_after_correctin_CNN/sig_genes_RF.txt")
 # MA and dispersion plots
 plotMA(res2)
 ################################################################################################################################################################################################################################################
@@ -217,12 +217,12 @@ plotMA(res2)
 ########################################################################### Deseq2 on CNN predicted values ###################################################################################################################################################################
 
 #loading the data: #disease CNN
-disease_Luekemia_scaled <- readRDS("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/disease_Luekemia_scaled_correct_scale_CNN.RDS") #scale_corrected_data
+disease_Luekemia_scaled <- readRDS("/path/to/data/disease_Luekemia_scaled_correct_scale_CNN.RDS") #scale_corrected_data
 #disease_Luekemia_scaled <- t(disease_Luekemia_scaled)
 disease_Luekemia_scaled <- disease_Luekemia_scaled [rownames(disease_Luekemia_scaled) %in% samples,]
 disease_Luekemia_scaled <- disease_Luekemia_scaled[,kept_genes]
 #loading the data: #Healthy CNN
-health_Luekemia_scaled <- readRDS("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/health_Luekemia_scaled_correct_scale_CNN.RDS") #scale_corrected_data
+health_Luekemia_scaled <- readRDS("/path/to/data/health_Luekemia_scaled_correct_scale_CNN.RDS") #scale_corrected_data
 #health_Luekemia_scaled <- t(health_Luekemia_scaled)
 health_Luekemia_scaled <- health_Luekemia_scaled [rownames(health_Luekemia_scaled) %in% samples,]
 health_Luekemia_scaled <- health_Luekemia_scaled[,kept_genes]
@@ -287,7 +287,7 @@ sig_genes_deseq_adult_df <- na.omit(sig_genes_deseq_adult_df)
 sig_genes_deseq_adult_df <- sig_genes_deseq_adult_df %>%  filter(abs(log2FoldChange)> 0.585)
 sig_genes_deseq_adult_CNN <- rownames(sig_genes_deseq_adult_df)
 
-writeLines(sig_genes_deseq_adult_CNN, "/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/sig_genes_CNN.txt")
+writeLines(sig_genes_deseq_adult_CNN, "/path/to/data/New_running_after_correctin_CNN/sig_genes_CNN.txt")
 # MA and dispersion plots
 plotMA(res2)
 ################################################################################################################################################################################################################################################
@@ -296,7 +296,7 @@ plotMA(res2)
 #kept_genes are already loaded (first part of the script)
 #RF part
 kept_genes <- new_kept_genes
-metadata_Luekemia <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+metadata_Luekemia <- read.csv("/path/to/data/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 col = c("epirr_id_without_version", "EpiClass_pred_Sex", "EpiClass_pred_Life_stage", "harmonized_sample_disease_high", "RNA_available", "project", "harmonized_tissue_type")
 metadata_Luekemia = metadata_Luekemia[,col]
 colnames(metadata_Luekemia) = c("sample", "sex", "age", "health_status", "RNA_available", "project", "harmonized_tissue_type")
@@ -316,11 +316,11 @@ disease_df <- metadata_Luekemia[metadata_Luekemia$health_status == "Cancer",]
 disease_sample <- disease_df$sample
 
 #loading singnificant genes from real data
-significant_gene_names_real= readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/sig_genes_real.txt")
+significant_gene_names_real= readLines("/path/to/data/New_running_after_correctin_CNN/sig_genes_real.txt")
 length(significant_gene_names_real)
 
 #load healthy part
-health_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/health_Luekemia_scaled.RDS")
+health_Luekemia_scaled <- readRDS("/path/to/data/health_Luekemia_scaled.RDS")
 health_Luekemia_scaled <- t(health_Luekemia_scaled)
 RF_health <- health_Luekemia_scaled[rownames(health_Luekemia_scaled) %in% healthy_sample,]
 #filter real sig genes from healthy part
@@ -328,7 +328,7 @@ RF_health <- RF_health[,significant_gene_names_real]
 dim(RF_health)
 
 #load RF disease
-disease_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/disease_Luekemia_scaled.RDS")
+disease_Luekemia_scaled <- readRDS("/path/to/data/disease_Luekemia_scaled.RDS")
 disease_Luekemia_scaled <- t(disease_Luekemia_scaled)
 RF_disease <- disease_Luekemia_scaled[rownames(disease_Luekemia_scaled) %in% disease_sample,]
 dim(RF_disease)
@@ -337,7 +337,7 @@ RF_disease <- RF_disease[,significant_gene_names_real]
 dim(RF_disease)
 
 # #loading real data itself (already is loaded)
-# real_RNA_data <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+# real_RNA_data <- read.csv("/path/to/data/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 # dim(real_RNA_data)
 # rownames(real_RNA_data) = real_RNA_data[,1]
 # real_RNA_data = real_RNA_data[,-1]
@@ -425,7 +425,7 @@ ggplot(plot_data, aes(x = log2_FC_real, y = log2_FC_RF, label = Gene)) +
 
 ############################################## Scatter plot for real data vs CNN (on significant genes from real data) ##########################################################################################################################
 kept_genes <- new_kept_genes
-metadata_Luekemia <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+metadata_Luekemia <- read.csv("/path/to/data/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 col = c("epirr_id_without_version", "EpiClass_pred_Sex", "EpiClass_pred_Life_stage", "harmonized_sample_disease_high", "RNA_available", "project", "harmonized_tissue_type")
 metadata_Luekemia = metadata_Luekemia[,col]
 colnames(metadata_Luekemia) = c("sample", "sex", "age", "health_status", "RNA_available", "project", "harmonized_tissue_type")
@@ -445,11 +445,11 @@ disease_df <- metadata_Luekemia[metadata_Luekemia$health_status == "Cancer",]
 disease_sample <- disease_df$sample
 
 #loading significant genes from real data
-significant_gene_names_real= readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/sig_genes_real.txt")
+significant_gene_names_real= readLines("/path/to/data/New_running_after_correctin_CNN/sig_genes_real.txt")
 length(significant_gene_names_real)
 
 #load CNN healthy
-health_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/health_Luekemia_scaled_correct_scale_CNN.RDS")
+health_Luekemia_scaled <- readRDS("/path/to/data/health_Luekemia_scaled_correct_scale_CNN.RDS")
 #health_Luekemia_scaled <- t(health_Luekemia_scaled)
 CNN_health <- health_Luekemia_scaled[rownames(health_Luekemia_scaled) %in% healthy_sample,]
 CNN_health <- CNN_health[, kept_genes]
@@ -460,7 +460,7 @@ dim(CNN_health)
 
 
 #load CNN disease
-disease_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/disease_Luekemia_scaled_correct_scale_CNN.RDS")
+disease_Luekemia_scaled <- readRDS("/path/to/data/disease_Luekemia_scaled_correct_scale_CNN.RDS")
 #disease_Luekemia_scaled <- t(disease_Luekemia_scaled)
 CNN_disease <- disease_Luekemia_scaled[rownames(disease_Luekemia_scaled) %in% disease_sample,]
 CNN_disease <- CNN_disease[, kept_genes]
@@ -468,7 +468,7 @@ CNN_disease <- CNN_disease[, kept_genes]
 CNN_disease <- CNN_disease[,significant_gene_names_real]
 
 # #loading real data itself (its already loaded thats why I cm it here)
-# real_RNA_data <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+# real_RNA_data <- read.csv("/path/to/data/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 # rownames(real_RNA_data) = real_RNA_data[,1]
 # real_RNA_data = real_RNA_data[,-1]
 
