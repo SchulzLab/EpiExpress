@@ -1,6 +1,6 @@
 print("T-test on all regions from all genes")
 
-directory <- "/projects/apog/work/models/1MB/Luekemia/ISP_RF_SEX_covariate" #input file(genes with ISP)
+directory <- "/path/to/data/" #input file(genes with ISP)
 
 # Get a list of files in the directory
 files <- list.files(directory,pattern = "\\.RDS$", full.names = TRUE)
@@ -8,7 +8,7 @@ print(length(files))
 
 
 #finding healthy and disease samples for adults 
-metadata_Luekemia <- read.csv("/projects/apog/work/models/1MB/Luekemia/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+metadata_Luekemia <- read.csv("/path/to/data//IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 print(dim(metadata_Luekemia))
 # 
 
