@@ -11,11 +11,11 @@ library(tidyverse)
 library(ggplot2)
 
 # shared genes between kept, CNN and RF
-health_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/health_Luekemia_scaled.RDS")
+health_Luekemia_scaled <- readRDS("path/to/data//health_Luekemia_scaled.RDS")
 genes_from_RF <- rownames(health_Luekemia_scaled)
-health_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/CNN/CNN_Luekemia_backscaled_healthy.RDS")
+health_Luekemia_scaled <- readRDS("path/to/data//CNN/CNN_Luekemia_backscaled_healthy.RDS")
 genes_from_CNN <- rownames(health_Luekemia_scaled)
-kept_genes <- read.table("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/kept_genes.txt", header = FALSE, skip = 1)[, 2]
+kept_genes <- read.table("path/to/data//kept_genes.txt", header = FALSE, skip = 1)[, 2]
 
 
 shared_genes1 <- intersect(genes_from_RF, genes_from_CNN)
@@ -23,11 +23,11 @@ shared_genes2 <- intersect(shared_genes1, kept_genes)
 print(length(shared_genes2))
 new_kept_genes <- shared_genes2
 
-# kept_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/shared_genes_CNN_RF_kept.txt")
+# kept_genes <- readLines("path/to/data//shared_genes_CNN_RF_kept.txt")
 
 #RF part
 kept_genes <- new_kept_genes
-metadata_Luekemia <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+metadata_Luekemia <- read.csv("path/to/data/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 col = c("epirr_id_without_version", "EpiClass_pred_Sex", "EpiClass_pred_Life_stage", "harmonized_sample_disease_high", "RNA_available", "project", "harmonized_tissue_type")
 metadata_Luekemia = metadata_Luekemia[,col]
 colnames(metadata_Luekemia) = c("sample", "sex", "age", "health_status", "RNA_available", "project", "harmonized_tissue_type")
@@ -49,14 +49,14 @@ disease_sample <- disease_df$sample
 
 
 
-health_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/health_Luekemia_scaled.RDS")
+health_Luekemia_scaled <- readRDS("path/to/data//health_Luekemia_scaled.RDS")
 health_Luekemia_scaled <- t(health_Luekemia_scaled)
 RF_health <- health_Luekemia_scaled[rownames(health_Luekemia_scaled) %in% healthy_sample,]
 dim(RF_health)
 
 
-significant_gene_names_RF= readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
-# significant_gene_names_RF= readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
+significant_gene_names_RF= readLines("path/to/data//sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
+# significant_gene_names_RF= readLines("path/to/data//sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
 
 length(significant_gene_names_RF)
 #filter genes:
@@ -64,7 +64,7 @@ RF_health <- RF_health[,significant_gene_names_RF]
 dim(RF_health)
 
 #load RF disease
-disease_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/disease_Luekemia_scaled.RDS")
+disease_Luekemia_scaled <- readRDS("path/to/data//disease_Luekemia_scaled.RDS")
 disease_Luekemia_scaled <- t(disease_Luekemia_scaled)
 RF_disease <- disease_Luekemia_scaled[rownames(disease_Luekemia_scaled) %in% disease_sample,]
 dim(RF_disease)
@@ -73,7 +73,7 @@ dim(RF_disease)
 RF_disease <- RF_disease[,significant_gene_names_RF]
 dim(RF_disease)
 
-real_RNA_data <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+real_RNA_data <- read.csv("path/to/data/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 dim(real_RNA_data)
 rownames(real_RNA_data) = real_RNA_data[,1]
 real_RNA_data = real_RNA_data[,-1]
@@ -164,7 +164,7 @@ ggplot(plot_data, aes(x = log2_FC_real, y = log2_FC_RF, label = Gene)) +
 
 #####CNN part
 kept_genes <- new_kept_genes
-metadata_Luekemia <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+metadata_Luekemia <- read.csv("path/to/data/IHEC_metadata_harmonization.v1.1_BCellLeukemiaSamples.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 col = c("epirr_id_without_version", "EpiClass_pred_Sex", "EpiClass_pred_Life_stage", "harmonized_sample_disease_high", "RNA_available", "project", "harmonized_tissue_type")
 metadata_Luekemia = metadata_Luekemia[,col]
 colnames(metadata_Luekemia) = c("sample", "sex", "age", "health_status", "RNA_available", "project", "harmonized_tissue_type")
@@ -184,21 +184,21 @@ disease_df <- metadata_Luekemia[metadata_Luekemia$health_status == "Cancer",]
 disease_sample <- disease_df$sample
 
 #load CNN healthy
-health_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/CNN/CNN_Luekemia_backscaled_healthy.RDS")
+health_Luekemia_scaled <- readRDS("path/to/data//CNN/CNN_Luekemia_backscaled_healthy.RDS")
 health_Luekemia_scaled <- t(health_Luekemia_scaled)
 CNN_health <- health_Luekemia_scaled[rownames(health_Luekemia_scaled) %in% healthy_sample,]
 CNN_health <- CNN_health[, kept_genes]
 dim(CNN_health)
 
-significant_gene_names_CNN = readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_CNN.txt")
-# significant_gene_names_CNN = readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
+significant_gene_names_CNN = readLines("path/to/data//sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_CNN.txt")
+# significant_gene_names_CNN = readLines("path/to/data//sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
 
 #filter genes:
 CNN_health <- CNN_health[,significant_gene_names_CNN]
 dim(CNN_health)
 
 #load CNN disease
-disease_Luekemia_scaled <- readRDS("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/CNN/CNN_Luekemia_backscaled_disease.RDS")
+disease_Luekemia_scaled <- readRDS("path/to/data//CNN/CNN_Luekemia_backscaled_disease.RDS")
 disease_Luekemia_scaled <- t(disease_Luekemia_scaled)
 CNN_disease <- disease_Luekemia_scaled[rownames(disease_Luekemia_scaled) %in% disease_sample,]
 CNN_disease <- CNN_disease[, kept_genes]
@@ -208,7 +208,7 @@ CNN_disease <- CNN_disease[, kept_genes]
 CNN_disease <- CNN_disease[,significant_gene_names_CNN]
 
 
-real_RNA_data <- read.csv("~/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
+real_RNA_data <- read.csv("path/to/data/genes_expected_count_DESeq2_H3K27acFormatted.tsv", sep = "\t", header = TRUE, quote = "", fill = TRUE)
 rownames(real_RNA_data) = real_RNA_data[,1]
 real_RNA_data = real_RNA_data[,-1]
 
