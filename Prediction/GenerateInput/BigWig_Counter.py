@@ -11,9 +11,16 @@ def fetch_counts(args):
     collected_counts = []
     this_bw = pyBigWig.open(bw_file)
 
+    # Check if the bigwig uses the 'chr' prefix or not. The bed_regions always have the chr-prefix added.
+    this_bw_chroms = this_bw.chroms()
+    if next(iter(this_bw_chroms.keys())).startswith('chr'):
+        remove_prefix = ''
+    else:  # If the bigwig doesn't have the prefix we remove it again.
+        remove_prefix = 'chr'
+
     for region in bed_regions:
         try:
-            bw_count = this_bw.stats(region[0], int(region[1]), int(region[2]), type="mean")[0]
+            bw_count = this_bw.stats(region[0].replace(remove_prefix, ''), int(region[1]), int(region[2]), type="mean")[0]
             if bw_count is None:
                 bw_count = 0
                 # errors.append([region, "count was NaN"])

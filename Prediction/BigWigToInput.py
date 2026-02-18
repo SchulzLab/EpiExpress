@@ -33,10 +33,15 @@ args = parser.parse_args()
 
 input_dict = json.load(open(args.json_file))
 
-for entry in ['bigwigs', 'gene_file', 'mode', 'out_folder', 'provided_input']:
+for entry in ['bigwigs', 'mode', 'out_folder', 'provided_input']:
     if entry not in input_dict:
         print("ERROR: missing entry in JSON file for " + entry)
         sys.exit()
+
+if not os.path.isdir(input_dict['out_folder']):
+    os.mkdir(input_dict['out_folder'])
+else:
+    print("CARE: Output folder already exists, files might get overwritten.")
 
 # Get the file with the model performance per gene.
 if os.path.isfile(input_dict['provided_input'] + '/' + 'ModelPerformances.txt.gz'):
@@ -49,14 +54,15 @@ else:
               input_dict['provided_input'] + '/' + 'ModelPerformances.txt.gz')
         sys.exit()
 
+if 'gene_file' not in input_dict or not os.path.isfile(input_dict['gene_file']):
+    print("No gene_file found, using all genes for which a model was trained.")
+    input_dict['gene_file'] = input_dict['provided_input'] + '/' + 'kept_genes_noIndex.txt'
+
 if 'cores' not in input_dict:
     input_dict['cores'] = 1
 
 if 'correlation_cutoff' not in input_dict:
     input_dict['correlation_cutoff'] = 0
-
-if not os.path.isdir(input_dict['out_folder']):
-    os.mkdir(input_dict['out_folder'])
 
 # Copy the used JSON file to the output directory.
 shutil.copyfile(args.json_file, input_dict['out_folder'] + '/' + args.json_file.split('/')[-1])
