@@ -196,7 +196,13 @@ if input_dict['mode'] == 'all' or 'binned' in input_dict['mode'].lower():
         gene_counts = np.zeros((len(bigwigs), possible_bins), dtype="float64")
         for n_bw, bw_file in enumerate(bigwigs.keys()):
             this_bw = pyBigWig.open(bw_file)
-            sample_counts = this_bw.stats(locs['chr'], lower_end, upper_end, type="mean", nBins=possible_bins)
+            # Check if the bigwig uses the 'chr' prefix or not.
+            this_bw_chroms = this_bw.chroms()
+            if next(iter(this_bw_chroms.keys())).startswith('chr'):
+                remove_prefix = ''
+            else:  # If the bigwig doesn't have the prefix we remove it again.
+                remove_prefix = 'chr'
+            sample_counts = this_bw.stats(locs['chr'].replace(remove_prefix, ''), lower_end, upper_end, type="mean", nBins=possible_bins)
             gene_counts[n_bw][:] = sample_counts
 
         # Now add the expression and overwrite the bed file.
