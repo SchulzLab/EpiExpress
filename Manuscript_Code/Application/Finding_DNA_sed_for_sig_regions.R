@@ -5,8 +5,7 @@ library(Biostrings)
 library(GenomicRanges)
 
 # Read the data from the file (including the Gene column) #enter either CNN or RF
-# data <- fread("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_unique_regions_after_FDR_smaller_0.05_Luekemia_RF_W2_with_gene_names_ranked.txt")
-data <- fread("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_unique_regions_after_FDR_smaller_0.05_Luekemia_RF_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt")
+data <- fread("/path/to//sig_unique_regions_after_FDR_smaller_0.05_Luekemia_RF_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt")
 
 # Filter the data for p-values smaller than 0.05
 data <- data %>%
@@ -48,7 +47,7 @@ export.bed(gr,con='regions1.bed')
 regions <- import("regions1.bed")
 
 # Load the genome sequence
-genome <- readDNAStringSet("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/hg38.fa")
+genome <- readDNAStringSet("/path/to/data/hg38.fa")
 
 # Extract sequences based on the regions
 sequences <- getSeq(genome, regions)

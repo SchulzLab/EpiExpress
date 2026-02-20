@@ -6,9 +6,9 @@ library(VennDiagram)
 # common <- Reduce(intersect, list(RF_genes,real_genes, CNN_genes))
 
 # Load the gene lists from the text files
-CNN_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/sig_genes_CNN.txt")
-RF_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
-real_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
+CNN_genes <- readLines("path/to/data/New_running_after_correctin_CNN/sig_genes_CNN.txt")
+RF_genes <- readLines("path/to/data/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
+real_genes <- readLines("path/to/data/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
 
 # Create the Venn diagram
 venn.plot <- venn.diagram(
@@ -34,9 +34,9 @@ grid.draw(venn.plot)
 # library(VennDiagram)
 # 
 # # Load the gene lists from the text files
-# CNN_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/sig_genes_CNN.txt")
-# RF_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
-# real_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
+# CNN_genes <- readLines("path/to/data/New_running_after_correctin_CNN/sig_genes_CNN.txt")
+# RF_genes <- readLines("path/to/data/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
+# real_genes <- readLines("path/to/data/sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
 # 
 # # Create the Venn diagram
 # venn.plot <- venn.diagram(

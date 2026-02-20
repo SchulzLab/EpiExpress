@@ -51,7 +51,7 @@ file_contents <- readLines(file_path)
 print(length(file_contents))
 print("_____________________________________")
 
-MLP2 <- readRDS("/projects/apog/work/models/1MB/results/Best_MLP_seeds.RDS")
+MLP2 <- readRDS("/path/to/data//Best_MLP_seeds.RDS")
 # Set the number of cores to use
 num_cores <- 48 # Change this to the desired number of cores
 cl <- makeCluster(num_cores)
@@ -78,15 +78,15 @@ process_gene <- function(p) {
       
       if (MLP == "NN1") {
         
-        if(file.exists(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"))){
+        if(file.exists(paste0("/path/to/data//", gene_name, ".txt.gz"))){
           print("Data Exist")
-          df = read.table(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
+          df = read.table(paste0("/path/to/data//", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
           
-          if(file.exists(paste0("/projects/apog/work/models/1MB/new_MLP_seed/NN1/models/",gene_name, ".hdf5")))
+          if(file.exists(paste0("/path/to/data//",gene_name, ".hdf5")))
           {
             print("Model Exist")
             
-            my_model <- load_model_hdf5(paste0("/projects/apog/work/models/1MB/new_MLP_seed/NN1/models/",gene_name, ".hdf5"), custom_objects = NULL, compile = TRUE)
+            my_model <- load_model_hdf5(paste0("/path/to/data//",gene_name, ".hdf5"), custom_objects = NULL, compile = TRUE)
             
             df <- df[order(df$Sample),] #ordering the sample names
             rownames(df) = NULL
@@ -96,7 +96,7 @@ process_gene <- function(p) {
             df2 = log2(df2 + 1) #whole data after log2, 
             df3 = cbind(df_samples, df2) #df3 is my dataset after log2 + 1
             
-            train_samples <- "/projects/apog/work/CNN_bin/miscellaneous/partition0_train.csv"
+            train_samples <- "/path/to/data//partition0_train.csv"
             
             
             train_samples2 <- read.csv(train_samples)
@@ -177,13 +177,13 @@ process_gene <- function(p) {
             # Combine the list of result rows into a data frame
             result_df <- do.call(rbind, result_list)
             
-            # write.table(result_df, file = paste0("/projects/apog/work/IHEC/ValidateInteractions/MLP_seed_test/IHECRE00001887/",gene_name,"_MLP_seed_checked.txt"),
+            # write.table(result_df, file = paste0("/path/to/data//",gene_name,"_MLP_seed_checked.txt"),
             #             sep = "\t", row.names = FALSE,  quote = FALSE)
             
             
             
             header_line <- paste0("# pearson_r = ", pearson_r, " .  MSE = ", MSE, " .  scaled_MSE = ", scaled_MSE)
-            output_file <- paste0("/projects/apog/work/IHEC/ValidateInteractions/MLP_seed_test/IHECRE00001887/", gene_name, "_MLP_all_seeds.txt")
+            output_file <- paste0("/path/to/data//", gene_name, "_MLP_all_seeds.txt")
             write(header_line, file = output_file)
             write.table(result_df, file = output_file, sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE, append = TRUE)
             
@@ -201,16 +201,16 @@ process_gene <- function(p) {
         }
         #NN2
       } else{
-        if(file.exists(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"))){
+        if(file.exists(paste0("/path/to/data//", gene_name, ".txt.gz"))){
           print("Data Exist")
-          df = read.table(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
+          df = read.table(paste0("/path/to/data//", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
           
-          if(file.exists(paste0("/projects/apog/work/models/1MB/new_MLP_seed/NN2/models/",gene_name, ".hdf5")))
+          if(file.exists(paste0("/path/to/data//",gene_name, ".hdf5")))
             
           {
             print("Model Exist")
             
-            my_model <- load_model_hdf5(paste0("/projects/apog/work/models/1MB/new_MLP_seed/NN2/models/",gene_name, ".hdf5"), custom_objects = NULL, compile = TRUE)
+            my_model <- load_model_hdf5(paste0("/path/to/data//",gene_name, ".hdf5"), custom_objects = NULL, compile = TRUE)
             
             df <- df[order(df$Sample),] #ordering the sample names
             rownames(df) = NULL
@@ -220,7 +220,7 @@ process_gene <- function(p) {
             df2 = log2(df2 + 1) #whole data after log2, 
             df3 = cbind(df_samples, df2) #df3 is my dataset after log2 + 1
             
-            train_samples <- "/projects/apog/work/CNN_bin/miscellaneous/partition0_train.csv"
+            train_samples <- "/path/to/data//partition0_train.csv"
             
             
             train_samples2 <- read.csv(train_samples)
@@ -304,13 +304,13 @@ process_gene <- function(p) {
             # Combine the list of result rows into a data frame
             result_df <- do.call(rbind, result_list)
             
-            # write.table(result_df, file = paste0("/projects/apog/work/IHEC/ValidateInteractions/MLP_seed_test/IHECRE00001887/",gene_name,"_MLP_seed_checked.txt"),
+            # write.table(result_df, file = paste0("/path/to/data//",gene_name,"_MLP_seed_checked.txt"),
             #             sep = "\t", row.names = FALSE,  quote = FALSE)
             # 
             
             
             header_line <- paste0("# pearson_r = ", pearson_r, " .  MSE = ", MSE, " .  scaled_MSE = ", scaled_MSE)
-            output_file <- paste0("/projects/apog/work/IHEC/ValidateInteractions/MLP_seed_test/IHECRE00001887/", gene_name, "_MLP_all_seeds.txt")
+            output_file <- paste0("/path/to/data//", gene_name, "_MLP_all_seeds.txt")
             write(header_line, file = output_file)
             write.table(result_df, file = output_file, sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE, append = TRUE)
             

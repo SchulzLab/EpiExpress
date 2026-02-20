@@ -1,8 +1,8 @@
 #converting ID Gene to Symbol by gtf file
 
-Gene_ID <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/sig_genes_CNN_corrected_scaled.txt")
-# Replace 'annotation.gtf.gz' with the path to your GTF file
-annotation <- "/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/gencode.v38.annotation.gtf"
+Gene_ID <- readLines("/path/to/data/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/sig_genes_CNN_corrected_scaled.txt")
+
+annotation <- "/path/to/data/gencode.v38.annotation.gtf"
 
 # Read the GTF file line by line
 lines <- readLines(gzfile(annotation))
@@ -39,6 +39,6 @@ gene_symbol_df <- data.frame(Gene_ID = names(gene_name_map), Symbol = gene_name_
 sum(is.na(gene_symbol_df$Symbol))
 length(gene_symbol_df$Symbol)
 
-writeLines(gene_symbol_df$Symbol,"/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/Symbol_sig_new_CNN_genes.txt")
+writeLines(gene_symbol_df$Symbol,"/path/to/data/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/Symbol_sig_new_CNN_genes.txt")
 
 

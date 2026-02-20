@@ -8,7 +8,7 @@ library(readr)
 library(stats)
 
 
-directory <- "/projects/apog/work/models/1MB/Luekemia/ISP_CNN_SEX_Cov/T_Test_all_with_gene_name2"
+directory <- "path/to/T_Test_all_with_gene_name2"
 # Get the list of all .txt files in the directory
 file_list <- list.files(path = directory, pattern = "*.txt", full.names = TRUE)
 print(length(file_list))
@@ -43,9 +43,9 @@ print(all_data[1:4,])
 print(dim(all_data))
 
 # Save the full results with FDR adjustment to a new file
-# full_output_file <- "/projects/apog/work/models/1MB/Luekemia/test_on_ISP_RF/FDR_all_on_all_regions_Luekemia_RF_no_filtering_before_FDR_W2_with_gene_names.txt"
-# full_output_file <- "/projects/apog/work/models/1MB/Luekemia/Tese_on_ISP_RF_SEX_cov/Lima_FDR_all_on_all_regions_Luekemia_RF_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt"
-full_output_file <- "/projects/apog/work/models/1MB/Luekemia/ISP_CNN_SEX_Cov/FDR_all_on_all_regions_Luekemia_CNN_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt"
+# full_output_file <- "/path/to//FDR_all_on_all_regions_Luekemia_RF_no_filtering_before_FDR_W2_with_gene_names.txt"
+# full_output_file <- "/path/to//Lima_FDR_all_on_all_regions_Luekemia_RF_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt"
+full_output_file <- "path/to/FDR_all_on_all_regions_Luekemia_CNN_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt"
 # Apply the function to the 'names' column
 # all_data$names <- sapply(all_data$names, transform_values)
 
@@ -63,14 +63,14 @@ filtered_data <- unique_data_after_FDR %>%
 print("______________________________________________________")
 
 # Save the filtered data to a new file
-# filtered_output_file <- "/projects/apog/work/models/1MB/Luekemia/test_on_ISP_RF/sig_unique_regions_after_FDR_smaller_0.05_Luekemia_RF_W2_with_gene_names.txt"
-filtered_output_file <- "/projects/apog/work/models/1MB/Luekemia/ISP_CNN_SEX_Cov/sig_unique_regions_after_FDR_smaller_0.05_Luekemia_CNN_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt"
+# filtered_output_file <- "/path/to//sig_unique_regions_after_FDR_smaller_0.05_Luekemia_RF_W2_with_gene_names.txt"
+filtered_output_file <- "path/to/sig_unique_regions_after_FDR_smaller_0.05_Luekemia_CNN_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt"
 # 
 # filtered_data$names <- sapply(filtered_data$names, transform_values)
 write_tsv(filtered_data, filtered_output_file)
 
 
-filtered_output_file2 <- "/projects/apog/work/models/1MB/Luekemia/ISP_CNN_SEX_Cov/JUST_sig_unique_regions_after_FDR_smaller_0.05_Luekemia_CNN_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt"
+filtered_output_file2 <- "path/to/JUST_sig_unique_regions_after_FDR_smaller_0.05_Luekemia_CNN_gens_byDSEQ_COV_SEX_no_filtering_before_FDR.txt"
 
 writeLines(filtered_data$names, filtered_output_file2)
 print("done")

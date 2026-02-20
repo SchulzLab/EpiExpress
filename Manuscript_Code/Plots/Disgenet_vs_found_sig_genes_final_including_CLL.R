@@ -9,7 +9,7 @@ library(readxl)
 library(jsonlite)
 
 # Define the file path
-file_path <- "/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/CLL_genes_Harmonizome.txt"  # Replace with your actual file path
+file_path <- "path/to/data/CLL_genes_Harmonizome.txt"  # 
 
 # Read the file as a string
 json_text <- paste(readLines(file_path), collapse = "")
@@ -24,7 +24,7 @@ CLL_gene_names <- gene_names$symbol
 CLL_gene_names <- data.frame(Disease = "CLL", Gene = CLL_gene_names)
 
 # Read the Excel file
-df <- read_excel("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/All_Luekemia_gene_names.xlsx")
+df <- read_excel("path/to/data/All_Luekemia_gene_names.xlsx")
 df <- df[-1,]
 AML_datasets1 <- df[,1:2]
 colnames(AML_datasets1) <- c("Disease", "Gene")
@@ -34,10 +34,10 @@ AML_datasets1 <- as.data.frame(AML_datasets1)
 AML_datasets <- rbind(CLL_gene_names, AML_datasets1)
 
 # Read gene lists
-CNN_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/Symbol_sig_new_CNN_genes.txt")
-RF_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
-real_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
-all_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_ALL.txt")
+CNN_genes <- readLines("path/to/data//Symbol_sig_new_CNN_genes.txt")
+RF_genes <- readLines("path/to/data//SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
+real_genes <- readLines("path/to/data//SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
+all_genes <- readLines("path/to/data/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_ALL.txt")
 
 # Calculate the unique sets for CNN and RF
 common_CNN_RF <- intersect(RF_genes, CNN_genes)
@@ -182,7 +182,7 @@ ggplot(A, aes(x = List, y = Disease, size = Enrichment, color = Enrichment)) +
 # 
 # 
 # # Define the file path
-# file_path <- "/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/CLL_genes_Harmonizome.txt"  # Replace with your actual file path
+# file_path <- "path/to/data/CLL_genes_Harmonizome.txt" 
 # 
 # # Read the file as a string
 # json_text <- paste(readLines(file_path), collapse = "")
@@ -196,7 +196,7 @@ ggplot(A, aes(x = List, y = Disease, size = Enrichment, color = Enrichment)) +
 # CLL_gene_names <- gene_names$symbol
 # CLL_gene_names <- data.frame(Disease = "CLL", Gene = CLL_gene_names)
 # 
-# df <- read_excel("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/All_Luekemia_gene_names.xlsx")
+# df <- read_excel("path/to/data/All_Luekemia_gene_names.xlsx")
 # df <- df[-1,]
 # AML_datasets1 <- df[,1:2]
 # colnames(AML_datasets1) <- c("Disease", "Gene")
@@ -204,13 +204,13 @@ ggplot(A, aes(x = List, y = Disease, size = Enrichment, color = Enrichment)) +
 # 
 # AML_datasets = rbind(CLL_gene_names, AML_datasets1)
 # 
-# CNN_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/New_running_after_correctin_CNN/Symbol_sig_new_CNN_genes.txt")
+# CNN_genes <- readLines("path/to/data/New_running_after_correctin_CNN/Symbol_sig_new_CNN_genes.txt")
 # length(CNN_genes)
-# RF_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
+# RF_genes <- readLines("path/to/data/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_RF.txt")
 # length(RF_genes)
-# real_genes <- readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
+# real_genes <- readLines("path/to/data/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_real.txt")
 # length(real_genes)
-# all_genes <-  readLines("/Users/shamim/Desktop/PhD/ML_project/ml_scripts/IHEC_Project/All_IHEC_result/1MB/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_ALL.txt")
+# all_genes <-  readLines("path/to/data/Luekemia_Apog_Aplication/SYMBOL_sig_genes_deseq_step_by_step_NO_factor_size_adult_luekemia_SEX_covariate_NO3_outleires_removed_UNKNOWN_sample_ALL.txt")
 # 
 # # Calculate the unique sets for CNN and RF
 # common_CNN_RF <- intersect(RF_genes, CNN_genes)

@@ -52,13 +52,13 @@ process_gene <- function(p) {
   tryCatch({
     gene_name <- p
     print(paste("Processing gene:", gene_name))
-    if(file.exists(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"))){
+    if(file.exists(paste0("/path/to/data//", gene_name, ".txt.gz"))){
       print("Data Exist")
-      df = read.table(paste0("/projects/apog/work/input/IHEC_Activity_1MB_hg38/", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
-      if(file.exists(paste0("/projects/apog/work/models/1MB/RF/",gene_name, ".RDS"))){
+      df = read.table(paste0("/path/to/data//", gene_name, ".txt.gz"), header = TRUE, sep = "\t")
+      if(file.exists(paste0("/path/to/data//",gene_name, ".RDS"))){
         print("Model Exist")
         
-        my_model <- readRDS(paste0("/projects/apog/work/models/1MB/RF/RF_last/",gene_name, ".RDS"))
+        my_model <- readRDS(paste0("/path/to/data//RF_last/",gene_name, ".RDS"))
         df <- df[order(df$Sample),] #ordering the sample names
         rownames(df) = NULL
         df = df[, colSums(df != 0) > 0] #if all values of a column is 0 Ill remove that column
@@ -66,7 +66,7 @@ process_gene <- function(p) {
         df2 = df[, 2:length(df)] 
         df2 = log2(df2 + 1) #whole data after log2, 
         df3 = cbind(df_samples, df2) #df3 is my dataset after log2 + 1
-        train_samples <- "/projects/apog/work/CNN_bin/miscellaneous/partition0_train.csv"
+        train_samples <- "/path/to/data//partition0_train.csv"
         
         
         train_samples2 <- read.csv(train_samples)

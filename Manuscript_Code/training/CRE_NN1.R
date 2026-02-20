@@ -12,7 +12,7 @@ library(keras)
 set.seed(123)
 
 
-file_path <- "/projects/apog/work/CNN_bin/miscellaneous/kept_genes.txt"
+file_path <- "/path/to/data/kept_genes.txt"
 
 # Read the file, skipping the first row (header)
 file_contents <- read.table(
