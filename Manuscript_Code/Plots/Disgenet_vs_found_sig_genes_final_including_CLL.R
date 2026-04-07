@@ -122,9 +122,9 @@ enrichment_data_melt$List <- factor(enrichment_data_melt$List,
                                       # "unique_RF_adj", "unique_CNN_adj", 
                                       "real_adj", "RF_adj", "CNN_adj"))
 
-# Filter out rows with near-zero enrichment values to be able to see all diasese
+# get near-zero enrichment values to be able to see all diasese
 enrichment_data_melt <- enrichment_data_melt %>% filter(Enrichment > 1e-10)
-# Filter out rows with enrichment values greater than 1.3 which is adj p-value 0.05
+# get enrichment values greater than 1.3 which is adj p-value 0.05
 #enrichment_data_melt <- enrichment_data_melt %>% filter(Enrichment > 1.3)
 A = as.data.frame(enrichment_data_melt)
 # #max
