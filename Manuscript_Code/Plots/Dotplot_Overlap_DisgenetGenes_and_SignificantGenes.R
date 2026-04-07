@@ -4,12 +4,7 @@
 library(dplyr)
 library(ggplot2)
 library(tidyr)
-library(dplyr)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
 library(data.table)
-library(ggplot2)
 library(readxl)
 
 df <- read_excel("path/to/data/All_Luekemia_gene_names.xlsx")
