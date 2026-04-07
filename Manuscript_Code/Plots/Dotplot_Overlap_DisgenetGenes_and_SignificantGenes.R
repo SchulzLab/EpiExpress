@@ -100,8 +100,9 @@ enrichment_data_melt$List <- factor(enrichment_data_melt$List,
                                     levels = c("unique_RF_adj", "unique_CNN_adj", "real_adj"))
 
 
-# Filter out rows with near-zero enrichment values
-enrichment_data_melt <- enrichment_data_melt %>% filter(Enrichment > 1e-10)
+# Filter for significance (Adjusted P < 0.05)
+enrichment_data_melt <- enrichment_data_melt %>% 
+  filter(Enrichment > 1.3)
 
 # Create the dot plot with gradient color
 ggplot(enrichment_data_melt, aes(x = List, y = Disease, size = Enrichment, color = Enrichment)) +
