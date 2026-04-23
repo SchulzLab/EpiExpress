@@ -151,9 +151,7 @@ While the models achieve strong predictive performance within this dataset, thei
 
 - Predictions may be less reliable for cell types that are not represented in the training data.
 - Performance may degrade for disease contexts or transcriptional states that differ substantially from those included in EpiATLAS.
-- The models are optimized for within-dataset prediction and interpretation, rather than guaranteed cross-dataset generalization.
 
-In addition, regulatory importance scores derived from in silico perturbation (ISP) are model-based and context-dependent. They should be interpreted as indicative of potential regulatory contributions within the learned model, rather than definitive or universally stable regulatory elements.
 
 Users are encouraged to consider these limitations when applying the models to new datasets.
 
