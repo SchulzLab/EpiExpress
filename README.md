@@ -12,7 +12,7 @@ EpiExpress is a pipeline for users to predict gene expression levels using pre-t
     - [3. Generate Input Data](#3-generate-input-data)
     - [4. Expression Prediction](#4-expression-prediction)
   - [Reproduce Manuscript Input Matrices](#reproduce-manuscript-input-matrices)
-  - [Limitation and Generalization](#Limitations and Generalization)
+  - [Limitation and Generalization](#limitation-and-generalization)
   - [License](#license)
 
 ## Manuscript code
