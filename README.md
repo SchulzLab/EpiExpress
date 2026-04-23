@@ -143,6 +143,20 @@ Once you downloaded the H3K27ac ChIP-seq bigwig-files (*fc.signal.bigwig), you c
 missing then is the column with the expression, which can be taken from the file on Zenodo called genes_expected_count_DESeq2_H3K27acFormatted.tsv. It is based
 on the matrix from IHEC called genes_expected_count_DESeq2.csv, but can be directly mapped to the samples whose H3K27ac data we used.
 
+## Limitations and Generalization
+
+The models provided in this repository are trained on the IHEC EpiATLAS dataset using matched H3K27ac ChIP-seq and RNA-seq data across a diverse set of cell types.
+
+While the models achieve strong predictive performance within this dataset, their generalization to entirely unseen biological contexts may be limited. In particular:
+
+- Predictions may be less reliable for cell types that are not represented in the training data.
+- Performance may degrade for disease contexts or transcriptional states that differ substantially from those included in EpiATLAS.
+- The models are optimized for within-dataset prediction and interpretation, rather than guaranteed cross-dataset generalization.
+
+In addition, regulatory importance scores derived from in silico perturbation (ISP) are model-based and context-dependent. They should be interpreted as indicative of potential regulatory contributions within the learned model, rather than definitive or universally stable regulatory elements.
+
+Users are encouraged to consider these limitations when applying the models to new datasets.
+
 ## Issues
 
 If you face issues with running any of the steps, please open an issue here on GitHub and we can work on a solution.
