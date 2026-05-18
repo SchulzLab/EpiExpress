@@ -120,7 +120,6 @@ enrichment_data_melt <- enrichment_data_melt %>%
 # Specify the desired order of the List factor
 enrichment_data_melt$List <- factor(enrichment_data_melt$List,  
                                     levels = c(
-                                      # "unique_RF_adj", "unique_CNN_adj", 
                                       "real_adj", "RF_adj", "CNN_adj"))
 
 
