@@ -53,7 +53,7 @@ calc_enrichment <- function(gene_list, disease_genes, all_genes) {
   
 }
 
-# Count the number of genes for each disease and exclude "Childhood Acute Myeloid Leukemia"
+# Count the number of genes for each disease and exclude "Childhood Acute Myeloid Leukemia" because has not enough genes
 disease_gene_counts <- AML_datasets %>%
   filter(Disease != "Childhood Acute Myeloid Leukemia") %>%
   group_by(Disease) %>%
