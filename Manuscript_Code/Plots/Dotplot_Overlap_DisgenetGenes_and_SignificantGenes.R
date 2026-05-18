@@ -1,5 +1,5 @@
 ############# Dotplot for comaring overlap between Disgenet leukemia genes and genes predicted by our models ##################
-#we downloaded Leukemia related datasets from Disgenet websit (old version)
+#we downloaded Leukemia related datasets from Disgenet websit
 #libraries
 library(dplyr)
 library(ggplot2)
@@ -83,7 +83,6 @@ for (disease in top_diseases) {
     real= real_pval 
   ))
 }
-# Reshape the enrichment_data for plotting
 # Reshape, adjust globally across all tests, and then apply -log10
   enrichment_data_melt <- enrichment_data %>%
     pivot_longer(cols = c("unique_RF", "unique_CNN", "real"),  
@@ -105,7 +104,7 @@ for (disease in top_diseases) {
 # get enrichment values greater than 1.3 which is adj p-value 0.05
 #enrichment_data_melt <- enrichment_data_melt %>% filter(Enrichment > 1.3)
 
-# Create the dot plot with gradient color
+# Plot
 ggplot(enrichment_data_melt, aes(x = List, y = Disease, size = Enrichment, color = Enrichment)) +
   geom_point() +
   scale_size_continuous(range = c(1, 10)) +  # Adjust the range for dot sizes
