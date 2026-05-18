@@ -146,7 +146,7 @@ A$Disease <- factor(A$Disease,
 
 
 
-# Now plot again
+# Plot
 ggplot(A, aes(x = List, y = Disease, size = Enrichment, color = Enrichment)) +
   geom_point() +
   scale_size_continuous(range = c(1, 10)) +  # Adjust dot sizes
