@@ -1,5 +1,5 @@
 
-#-----------code with ordering disease and picking 5 category with higest enrichment (average among three methods)
+# Disgenet comparison plot
 # Load libraries
 library(dplyr)
 library(ggplot2)
