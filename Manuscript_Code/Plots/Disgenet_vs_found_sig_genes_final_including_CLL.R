@@ -77,10 +77,6 @@ disease_gene_counts <- AML_datasets %>%
   dplyr::summarize(gene_count = dplyr::n()) %>%
   dplyr::arrange(desc(gene_count))
 
-# # Select the top 8 diseases with the highest number of genes
-# top_diseases <- disease_gene_counts %>%
-#   slice(1:8) %>%
-#   pull(Disease)
 
 top_diseases <- c("CLL" ,"Acute Myeloid Leukemia (AML-M2)", "Cytogenetically normal acute myeloid leukemia", 
                   "Treatment related acute myeloid leukaemia", "Adult Acute Myeloblastic Leukemia")
