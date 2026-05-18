@@ -49,7 +49,7 @@ calc_enrichment <- function(gene_list, disease_genes, all_genes) {
            nrow = 2, byrow = TRUE)
   )
   
-  return(p.adjust(fisher_result$p.value, method = "BH"))
+  return(fisher_result$p.value)
   
 }
 
@@ -70,29 +70,34 @@ AML_top_datasets <- AML_datasets %>% filter(Disease %in% top_diseases)
 for (disease in top_diseases) {
   disease_genes <- AML_top_datasets %>% filter(Disease == disease) %>% pull(Gene)
   
-  # Calculate adjusted p-values for each gene list
-  real_adj_pval <- calc_enrichment(real_genes, disease_genes, all_genes)
-  unique_RF_adj_pval <- calc_enrichment(unique_RF, disease_genes, all_genes)
-  unique_CNN_adj_pval <- calc_enrichment(unique_CNN, disease_genes, all_genes)
+  #calculate p-value
+  real_pval <- calc_enrichment(real_genes, disease_genes, all_genes)
+  unique_RF_pval <- calc_enrichment(unique_RF, disease_genes, all_genes)
+  unique_CNN_pval <- calc_enrichment(unique_CNN, disease_genes, all_genes)
   
-  # Store the -log10(adjusted p-values) in the enrichment_data dataframe
+ 
   enrichment_data <- rbind(enrichment_data, data.frame(
     Disease = disease,  
-    unique_RF_adj = -log10(unique_RF_adj_pval + 1e-10),
-    unique_CNN_adj = -log10(unique_CNN_adj_pval + 1e-10),
-    real_adj = -log10(real_adj_pval + 1e-10)
+    unique_RF = unique_RF_pval,
+    unique_CNN= unique_CNN_pval,
+    real= real_pval 
   ))
 }
 # Reshape the enrichment_data for plotting
-enrichment_data_melt <- enrichment_data %>%
-  pivot_longer(cols = c("unique_RF_adj", "unique_CNN_adj", "real_adj"),  
-               names_to = "List", values_to = "Enrichment")
-
-# Specify the desired order of the List factor
-enrichment_data_melt$List <- factor(enrichment_data_melt$List,  
-                                    
-                                    
-                                    levels = c("unique_RF_adj", "unique_CNN_adj", "real_adj"))
+# Reshape, adjust globally across all tests, and then apply -log10
+  enrichment_data_melt <- enrichment_data %>%
+    pivot_longer(cols = c("unique_RF", "unique_CNN", "real"),  
+                 names_to = "List", values_to = "Raw_P") %>%
+    mutate(P_adj = p.adjust(Raw_P, method = "BH"),             # BH adjustment
+           Enrichment = -log10(P_adj + 1e-10),                 # math conversion
+           List = case_match(List, 
+                             "unique_RF"  ~ "unique_RF_adj", 
+                             "unique_CNN" ~ "unique_CNN_adj", 
+                             "real"       ~ "real_adj"))
+  
+  # Specify the factor order using the newly mapped names
+  enrichment_data_melt$List <- factor(enrichment_data_melt$List,       
+                                      levels = c("unique_RF_adj", "unique_CNN_adj", "real_adj"))
 
 
 # get near-zero enrichment values to be able to see all diasese
