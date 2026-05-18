@@ -46,8 +46,6 @@ unique_CNN <- setdiff(CNN_genes, union(real_genes, RF_genes))
 
 # Initialize enrichment_data to store results
 enrichment_data <- data.frame(Disease = character(), 
-                              # unique_RF_adj = numeric(),  
-                              # unique_CNN_adj = numeric(),  
                               real_adj = numeric(),
                               RF_adj = numeric(),
                               CNN_adj = numeric(),
