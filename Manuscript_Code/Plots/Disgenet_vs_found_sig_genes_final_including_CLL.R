@@ -133,15 +133,6 @@ enrichment_data_melt <- enrichment_data_melt %>% filter(Enrichment > 1e-10)
 # get enrichment values greater than 1.3 which is adj p-value 0.05
 #enrichment_data_melt <- enrichment_data_melt %>% filter(Enrichment > 1.3)
 A = as.data.frame(enrichment_data_melt)
-# #max
-# A$Disease <- factor(A$Disease, 
-#                     levels = A %>%
-#                       group_by(Disease) %>%
-#                       mutate(MaxEnrichment = max(Enrichment, na.rm = TRUE)) %>%
-#                       distinct(Disease, MaxEnrichment) %>%
-#                       arrange(desc(MaxEnrichment)) %>%
-#                       dplyr::pull(Disease) %>%
-#                       rev())  # Reverse the order
 
 #average
 A$Disease <- factor(A$Disease, 
