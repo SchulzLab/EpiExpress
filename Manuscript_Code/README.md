@@ -55,6 +55,8 @@ Includes scripts for the Histone-Acetylome-Wide Association Studies in the manus
 - `FDR_on_all_regions.R`: Performs FDR test on the regions and filter them based on adjusted p-value.
 - `Finding_DNA_sed_for_sig_regions.R`: Finds DNA sequence of significant regions (DNA seq is input of PASTAA tool).
 
+### 5. Gene_Features
+Files used to fetch various features on gene-level, which were then correlated with model performance.
 
 ## Purpose  
 These scripts were developed as part of the research process and were used internally to:  
