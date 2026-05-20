@@ -2,6 +2,7 @@ import gzip
 import os
 import pandas as pd
 import numpy as np
+import scipy.stats
 import random
 import pybedtools
 import gseapy as gp
@@ -16,7 +17,18 @@ random.seed(1234)
 
 """From the different models get a specified number of top scored interactions in a sample and 
 calculate the recall for the eQTL-gene pairs in the matching GTEx tissue. The matching of samples and 
-input files for the models were prepared beforehand."""
+input files for the models were prepared beforehand.
+
+Works in two modes, written both in this script as they have a high redundancy: 'eQTLs' and 'ChromHMM'.
+
+'eQTLS':
+From the different models get a specified number of top scored interactions in a sample and 
+calculate the recall for the eQTL-gene pairs in the matching GTEx tissue. The matching of samples and 
+input files for the models were prepared beforehand.
+
+'ChromHMM':
+Take all interactions from a sample, then get the maximum ISP per region and rank those. On the ranked regions run
+an enrichment analysis for the ChromHMM states."""
 
 
 def match_colname(c_name):
@@ -31,6 +43,9 @@ def match_colname(c_name):
     else:
         return c_name
 
+mode = 'ChromHMM'
+if mode.lower() not in ['eqtls', 'chromhmm']:
+    raise ValueError("Mode must be either 'eQTLs' or 'ChromHMM'.")
 
 tag = 'RecallRun'
 out_dir = "*/eQTLs_" + tag + '_'
@@ -38,6 +53,8 @@ input_folder = "*/ValidateInteractions/"  # Directory with a folder written for 
 
 kept_genes_file = "*/kept_genes.txt"
 kept_genes = set([x.strip().split('\t')[1] for x in open(kept_genes_file).readlines()[1:]])
+
+chromhmm_folder = "*/IHEC/per_epigenome_ChromHMM/"
 
 models = ['ENCODE_RF_ism_all_reverse', 'ENCODE_MLP_ism_all_reverse', 'STITCHIT_ism_all_eqtl_backscaled',
           'binnedRF_os_ism_all_expand_len10', 'CNN_bestwarm_os_ism_all_expand_len10']
@@ -182,44 +199,78 @@ def get_sample_recall(args):
 
     print(sample, model, len(collected_df), 'total interactions')
 
-    for score_col in ['score', 'score normG']:
-        sorted_score_df = collected_df.sort_values(by=score_col, ascending=False)
-        this_score_df = sorted_score_df.iloc[:100000]
-        this_score_df.index = ['\t'.join([str(x) for x in val]) for val in
-                               this_score_df[['Ensembl ID', 'start', 'end']].values]
-        this_score_df = this_score_df[[score_col]]
-        collected_bed = pybedtools.BedTool('\n'.join(this_score_df.index), from_string=True)
+    if mode.lower() == 'eqtls':
+        for score_col in ['score', 'score normG']:
+            # For the eQTL enrichment, sort by the absolute ISP, take the top 100k and subset the hits for the minimum per sample.
+            collected_df['score'] = collected_df['score'].abs()
+            sorted_score_df = collected_df.sort_values(by=score_col, ascending=False)
+            this_score_df = sorted_score_df.iloc[:100000]
+            this_score_df.index = ['\t'.join([str(x) for x in val]) for val in this_score_df[['Ensembl ID', 'start', 'end']].values]
+            this_score_df = this_score_df[[score_col]]
+            collected_bed = pybedtools.BedTool('\n'.join(this_score_df.index), from_string=True)
 
-        for eqtl in eqtl_types:
-            start_e = clock()
-            inter_hits = collected_bed.intersect(eqtl_beds[sample_tissue_map[sample]][eqtl], u=True)
-            downsampled_hits = set(
-                random.sample(set(['\t'.join(x.fields[:3]) for x in inter_hits]), minimum_hits[eqtl][sample]))
-            re_res = gp.prerank(rnk=this_score_df,  # CARE they sort themselves again by the first column.
-                                gene_sets={
-                                    model + '; ' + score_col + '; ' + sample_tissue_map[sample]: downsampled_hits},
-                                min_size=1,
-                                max_size=len(eqtl_beds[sample_tissue_map[sample]][eqtl]) + 1,
-                                permutation_num=100,  # reduce number to speed up testing
-                                # If set creates a directory at that path.
-                                outdir=None if not plot_gsea else out_dir + model + "_" + score_col.replace(" ",
-                                                                                                            '') + "_" + sample + "_" + eqtl,
-                                seed=1234,
-                                threads=1,
-                                weight=0,
-                                no_plot=not plot_gsea,
-                                verbose=False,
-                                ).res2d
-            print(clock() - start_e, eqtl)
+            for eqtl in eqtl_types:
+                start_e = clock()
+                inter_hits = collected_bed.intersect(eqtl_beds[sample_tissue_map[sample]][eqtl], u=True)
+                downsampled_hits = set(random.sample(set(['\t'.join(x.fields[:3]) for x in inter_hits]), minimum_hits[eqtl][sample]))
+                re_res = gp.prerank(rnk=this_score_df, # CARE they sort themselves again by the first column.
+                            gene_sets={model+'; '+score_col+'; '+sample_tissue_map[sample]: downsampled_hits},
+                            min_size=1,
+                            max_size=len(eqtl_beds[sample_tissue_map[sample]][eqtl])+1,
+                            permutation_num=100, # reduce number to speed up testing
+                            # If set creates a directory at that path.
+                            outdir=None if not plot_gsea else out_dir+model+"_"+score_col.replace(" ", '')+"_"+sample+"_"+eqtl,
+                            seed=1234,
+                            threads=1,
+                            weight=0,
+                            no_plot=not plot_gsea,
+                            ).res2d
+                print(clock() - start_e, eqtl)
+                sample_scores.append({"EpiRR": sample, 
+                                    'eqtl': eqtl,
+                                    'model': model + (' normG') if 'normG' in score_col else model,
+                                    'ranks': 100000,
+                                    'eQTL-gene pair hits': len(downsampled_hits),
+                                    'ES': re_res.iloc[0]['ES'],  # We only have one entry.
+                                    'NES': re_res.iloc[0]['NES'],
+                                    'NOM p-val': re_res.iloc[0]['NOM p-val']})
+                
+    elif mode.lower() == 'chromhmm':
+        start_c = clock()
+        # For the ChromHMM enrichment we group by the region, remove zeros, take the maximum absolute ISP and then sort descendingly.
+        agg_regions = collected_df.groupby(['chr', 'start', 'end']).agg({'score': lambda x: max(x, key=abs)}).sort_values(by='score', ascending=False)
+        agg_regions.index = ['chr'+'\t'.join([str(x) for x in val]) for val in agg_regions.index]
+        # Take the top 1k with positive and 1k with negative scores and run a Fisher for each ChromHMM state.
+        top_regions = set(agg_regions.iloc[:1000].index)
+        
+        # We know we only have one matching file, but the EpiRR version can be variable and is not known here.
+        chromhmm_file = list(eQTL_Helpers.fn_patternmatch(chromhmm_folder + '/BED/' + sample + "*.bed.gz").keys())[0]
+        chromhmm_bed = pybedtools.BedTool(chromhmm_file)
+        all_states = set([x.fields[3] for x in chromhmm_bed])
+        # For each region get the ChromHMM state with which it has the highest overlap.
+        regions_states = {r: {s: 0 for s in all_states} for r in agg_regions.index}
+        regions_inter = pybedtools.BedTool('\n'.join(agg_regions.index), from_string=True).intersect(chromhmm_bed, wo=True)
+        for inter in regions_inter:
+            regions_states['\t'.join(inter.fields[:3])][inter.fields[6]] += int(inter.fields[-1])
+        state_sets = {s: set() for s in all_states}
+        for region, states in regions_states.items():
+            state_sets[max(states, key=states.get)].add(region)
+
+        for state, state_regs in state_sets.items():
+            non_top_regions = set(agg_regions.index) - top_regions
+            # Get the regions that have the highest overlap with the ChromHMM state.
+            fish_table = [[len(state_regs & top_regions) + 1, len(top_regions - state_regs) + 1],
+                            [len(non_top_regions & state_regs) + 1, len(non_top_regions - state_regs) + 1]]
+            fish_stat, pval = scipy.stats.fisher_exact(fish_table)
             sample_scores.append({"EpiRR": sample,
-                                  'eqtl': eqtl,
-                                  'model': model + (' normG') if 'normG' in score_col else model,
-                                  'ranks': 100000,
-                                  'eQTL-gene pair hits': len(set(['\t'.join(x.fields[:3]) for x in inter_hits])),
-                                  'ES': re_res.iloc[0]['ES'],  # We only have one entry.
-                                  'NES': re_res.iloc[0]['NES'],
-                                  'NOM p-val': re_res.iloc[0]['NOM p-val']})
-
+                                'model': model,
+                                'total ranked regions': agg_regions.shape[0],
+                                'top regions': len(top_regions),
+                                'state': state,
+                                'state regions': len(state_regs),
+                                'oddsratio': fish_stat,
+                                'Fisher p-val': pval})
+        
     return sample_scores
 
 

@@ -1,9 +1,20 @@
 import gzip
+import numpy as np
+import re
 from pybedtools import BedTool
 from itertools import chain
 from matplotlib import pyplot as plt
 import seaborn as sns
 from collections import Counter
+from matplotlib.colors import LinearSegmentedColormap
+import matplotlib.gridspec
+from matplotlib import cm, colors, colorbar
+
+
+def sanitize_path(path_string):
+    """Function to remove unwanted characters from a file path before saving. Put here since we need it for a lot
+    of functions and eases adjustment e.g. for OS."""
+    return re.sub(r'[^A-Za-z0-9._\-\\\\////]+', '', path_string)
 
 
 def gene_window_bed(gtf_file, extend=200, gene_set=set(), tss_type='5', dict_only=False, merge=False,
@@ -148,4 +159,104 @@ def basic_violin(plot_df, y_col, x_col, x_order=None, hue_col=None, hue_order=No
     for form in formats:
         f.savefig((output_path + str(x_col) + '_' + str(y_col) + '_' + str(hue_col) + '_Violin.'+form).replace(' ', ''),
                   bbox_inches='tight', format=form)
+    plt.close()
+
+
+
+def heatmap_cols(plot_df, cmap_cols, plot_out, row_label_col=None, column_labels=None, class_col=None,
+                 x_size=20, y_size=40, title="", annot_cols=None, width_ratios=None, wspace=0.4, rasterized=True,
+                 annot_s=10, ticksize=14, heat_ticksize=14, square=False, x_rotation=70, y_rotation=0,
+                 ax_fontweight='normal', row_label_first=False, x_label_pos='top', formats=['pdf']):
+    """
+    Multiple heatmaps side-by-side but the same rows. Allows to show several metrics for the same rows with different
+    colourmaps etc. E.g. for a list of top differential genes first a heatmap of baseline expression coloured by TPM,
+    followed by a separate heatmap-block with the log2FC for the same genes.
+
+    Args:
+        cmap_cols: Dictionary with one entry for each block. The keys don't matter as long as they are unique. E.g.
+            {0: {'cols': ['Mean_Control_FM', 'Mean_FM_Mock_Ctrl', 'Mean_Tcf15_FM', 'Mean_FM_Tcf15_OE'],
+                     'centre': 0, (optional)
+                     'cmap': 'mako',
+                     'cbar_label': 'TPM',
+                     'vmax': 200, (optional)
+                     'vmin': 0, (optional)
+                     }
+        row_label_col: Column where to fetch the row-strings from. Set to None to use the index.
+        column_labels: Alternative to using the column names as indicated in cmap_cols.
+        class_col: Column that should be added as separate first heatmap-block, should be categorical.
+        annot_cols: Dictionary of {"column": "column with annotation string"} to write the strings in the value into the cells of columns.
+        width_ratios: Ratios of the widths of each heatmap-block.
+        wspace: Additional horizontal space between blocks.
+        rasterized: Whether to draw thin white lines around cells.
+        square: Whether cells should be squares.
+        row_label_first: Only write the row names for the first entry and skip for the others.
+    """
+    all_cols = list(chain(*[c['cols'] for c in cmap_cols.values()]))
+    f, axes = plt.subplots(nrows=1, ncols=len(cmap_cols)+bool(class_col), figsize=(x_size, y_size),
+                           gridspec_kw={'width_ratios': [0.1] * bool(class_col) + [0.9*len(c['cols'])/len(all_cols) for c in cmap_cols.values()] if not width_ratios else width_ratios})
+    # Since we might have different colourmaps we define two matrices for each, one for the values
+    # and one for the annotation.
+    for n, c_attrs in enumerate(cmap_cols.values()):
+        if class_col:
+            n += 1
+        if len(cmap_cols) == 1 and not class_col:  # If we only had one heatmap we can't index axes.
+            this_ax = axes
+        else:
+            this_ax = axes[n]
+        # this_cmap = cm.get_cmap(c_attrs['cmap'])
+
+        value_mat = np.zeros([len(plot_df), len(c_attrs['cols'])])
+        annot_mat = np.full([len(plot_df), len(c_attrs['cols'])], '', dtype=object)  # Numpy complains otherwise.
+        for c, col in enumerate(c_attrs['cols']):
+            value_mat[:, c] = plot_df[col].values
+            if annot_cols:
+                if col in annot_cols:
+                    annot_mat[:, c] = plot_df[annot_cols[col]].values
+        heat = sns.heatmap(value_mat, ax=this_ax,  rasterized=rasterized,
+                           yticklabels=plot_df.index if not row_label_col else plot_df[row_label_col].values,
+                           xticklabels=c_attrs['cols'] if not column_labels else column_labels, cbar=True,
+                           cmap=c_attrs['cmap'], fmt='', annot=annot_mat,
+                           annot_kws={'size': annot_s}, cbar_kws={'label': c_attrs['cbar_label'], 'shrink': 0.7},
+                           center=None if 'centre' not in c_attrs or c_attrs['centre'] is False else c_attrs['centre'],
+                           vmin=None if 'vmin' not in c_attrs else c_attrs['vmin'],
+                           vmax=None if 'vmax' not in c_attrs else c_attrs['vmax'], square=square)
+        if row_label_first and n > 0:
+            heat.tick_params(left=False, labelleft=False)
+        heat.set_xticklabels(heat.get_xmajorticklabels(), fontsize=ticksize, rotation=x_rotation, fontweight=ax_fontweight)
+        heat.set_yticklabels(heat.get_ymajorticklabels(), fontsize=ticksize, rotation=y_rotation, fontweight=ax_fontweight)
+        if 'row_labels' in c_attrs and not c_attrs['row_labels']:
+                heat.axes.get_yaxis().set_visible(False)
+        if x_label_pos == 'top':
+            this_ax.tick_params(axis='x', labeltop=True, top=True, labelbottom=False, bottom=False)
+        else:
+            this_ax.tick_params(axis='x', labeltop=False, top=False, labelbottom=True, bottom=True)
+        heat_cbar = heat.collections[0].colorbar
+        heat_cbar.ax.tick_params(labelsize=heat_ticksize)
+        heat_cbar.ax.yaxis.label.set_fontsize(heat_ticksize)
+
+        if class_col and n == 1:
+            # Add the class bar as separate one-column heatmap to the left.
+            class_to_int = {c: i for i, c in enumerate(set(plot_df[class_col]))}
+            if len(class_to_int) == 2:
+                class_cmap = LinearSegmentedColormap.from_list("two_contrast", ['#E1BE6A', '#40B0A6'], N=2)
+            else:
+                class_cmap = cm.get_cmap("tab20", len(class_to_int))
+            sns.heatmap([[class_to_int[c]] for c in plot_df[class_col].values], cmap=class_cmap, ax=axes[0],
+                        xticklabels=False, yticklabels=False, square=square,
+                        cbar_kws={'label': class_col, 'location': 'left', 'shrink': 1})  # Shrink is somehow ignored here.
+            colorbar = axes[0].collections[0].colorbar
+            r = colorbar.vmax - colorbar.vmin
+            colorbar.set_ticks([colorbar.vmin + r / len(class_to_int) * (0.5 + i) for i in range(len(class_to_int))])
+            colorbar.set_ticklabels(list(class_to_int.keys()))
+            colorbar.ax.yaxis.set_label_position('left')
+            colorbar.ax.yaxis.set_ticks_position('left')
+            colorbar.ax.yaxis.label.set_fontsize(14)
+            colorbar.ax.tick_params(labelsize=14)
+    if title:
+        plt.title(title, size=18, fontweight='bold')
+    plt.subplots_adjust(wspace=0.4 if not wspace else wspace)
+    if type(formats) != list:
+        formats = [formats]
+    for form in formats:
+        plt.savefig(sanitize_path(plot_out + "_MultiColHeatmap."+form), bbox_inches='tight', format=form)
     plt.close()
